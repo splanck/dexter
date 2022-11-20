@@ -1,0 +1,50 @@
+Here is a list of items we hope to achieve with Dexter. We'll be adding,
+removing, and changing this all the time.
+
+Phase I:
+
+- Custom boot loader
+- Kernel passes control from assembly to C
+- Keyboard driver
+- Custom basic command shell
+- Enable and handle hardware interupts
+- Basic memory paging enabled
+- Task scheduler to run user processes
+- Basic support for C standard library functions
+- Start implementing OS interupts
+- Basic custom file system
+
+Phase II:
+
+- Mouse driver
+- Basic VGA driver
+- Expanded full featured command shell
+- Improved file system with security
+- Basic file system utilities
+- Fairly complete C standard library implemented
+- Begin work on OS APIs
+
+Phase III:
+
+- Create standard driver framework
+- Begin porting some basic UNIX applications
+- Basic SVGA driver
+- Basic working TCP networking stack
+- Basic network driver
+
+Phase IV:
+
+- Migrate development tools to allow Dexter to natively build itself
+
+Below are some additional design notes:
+
+- Initial implementation will be 32bit for simplicity's sake, but plan is 
+to move to 64bit eventally.
+- Dexter at this time is the name for the kernel and any other pieces of
+the main project.
+- Dexter is not intended to be a clone of any existing operating system and
+has no intention of providing source or binary compatibility with any
+existing system.
+- All code for the Dexter project will be written as part of the project
+unless a special exemption has been granted. GPL code will not be part of
+the system.
