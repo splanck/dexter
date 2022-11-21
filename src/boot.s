@@ -1,7 +1,17 @@
-ORG 0x7c00
+ORG 0
 BITS 16
 
+jmp 0x7c0:start ; Set start of code segment
+    
 start:
+    cli ; Clear interupts
+    mov ax, 0x7c0
+    mov ds, ax ; Set data segment to 0x7c0
+    mov es, ax
+    mov ax, 0x00
+    mov ss, ax ; Set stack segment to zero
+    mov sp, 0x7c00
+    sti ; Enable interupts
     mov si, message
     call print
     
@@ -25,5 +35,6 @@ print_char:
 
 message: db 'THIS IS DEXTER!', 0
 
+; Add the boot signature
 times 510-($ - $$) db 0
 dw 0xAA55
