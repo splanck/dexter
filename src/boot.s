@@ -1,14 +1,19 @@
 ORG 0
 BITS 16
-
-jmp 0x7c0:start ; Set start of code segment
+_start:
+    jmp short start
+    nop
     
+times 33 db 0
 start:
+    jmp 0x7c0:step2 ; Set start of code segment
+    
+step2:
     cli ; Clear interupts
     mov ax, 0x7c0
     mov ds, ax ; Set data segment to 0x7c0
     mov es, ax
-    mov ax, 0x00
+    mov ax, 0x00    
     mov ss, ax ; Set stack segment to zero
     mov sp, 0x7c00
     sti ; Enable interupts
