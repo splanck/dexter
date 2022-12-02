@@ -1,1 +1,1 @@
-nasm -f bin ./boot.s -o ./boot.bin
+nasm -f bin ./boot.s -o ../bin/boot.bin

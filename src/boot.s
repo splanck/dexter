@@ -44,7 +44,7 @@ print_char:
 
 message: db 'THIS IS DEXTER!', 0
 
-load_protected:
+load_protected: ; Switch into 32bit mode
     cli
     lgdt[gdt_descriptor]
     mov eax, cr0
@@ -81,6 +81,7 @@ gdt_descriptor:
 
 [BITS 32]
 load32:
+    ; Initialize 32bit registers
     mov ax, DATA_SEG
     mov ds, ax
     mov es, ax
@@ -89,6 +90,11 @@ load32:
     mov ss, ax
     mov ebp, 0x00200000
     mov esp, ebp
+
+    ; Enable A20 line
+    in al, 0x92
+    or al, 2
+    out 0x92, al
     
     jmp $
     
