@@ -50,7 +50,8 @@ load_protected: ; Switch into 32bit mode
     mov eax, cr0
     or eax, 0x1
     mov cr0, eax
-    jmp CODE_SEG:load32
+    ; jmp CODE_SEG:load32
+    jmp $
 
 gdt_start:
 gdt_null:
@@ -78,25 +79,6 @@ gdt_end:
 gdt_descriptor:
     dw gdt_end - gdt_start - 1
     dd gdt_start
-
-[BITS 32]
-load32:
-    ; Initialize 32bit registers
-    mov ax, DATA_SEG
-    mov ds, ax
-    mov es, ax
-    mov fs, ax
-    mov gs, ax
-    mov ss, ax
-    mov ebp, 0x00200000
-    mov esp, ebp
-
-    ; Enable A20 line
-    in al, 0x92
-    or al, 2
-    out 0x92, al
-    
-    jmp $
     
 ; Add the boot signature
 times 510-($ - $$) db 0
