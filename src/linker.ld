@@ -10,7 +10,7 @@ SECTIONS
 
     .rodata : ALIGN(4096)
     {
-        *(.nodata)
+        *(.rodata)
     }
 
     .data : ALIGN(4096)
