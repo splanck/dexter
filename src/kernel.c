@@ -6,18 +6,15 @@ uint16_t* video_mem = 0;
 uint16_t terminal_row = 0;
 uint16_t terminal_col = 0;
 
-uint16_t terminal_make_char(char c, char colour)
-{
+uint16_t terminal_make_char(char c, char colour) {
     return (colour << 8) | c;
 }
 
-void terminal_putchar(int x, int y, char c, char colour)
-{
+void terminal_putchar(int x, int y, char c, char colour) {
     video_mem[(y * VGA_WIDTH) + x] = terminal_make_char(c, colour);
 }
 
-void terminal_writechar(char c, char colour)
-{
+void terminal_writechar(char c, char colour) {
     if (c == '\n')
     {
         terminal_row += 1;
@@ -36,8 +33,7 @@ void terminal_writechar(char c, char colour)
     }
 }
 
-void terminal_initialize()
-{
+void terminal_initialize() {
     video_mem = (uint16_t*)(0xB8000);
     terminal_row = 0;
     terminal_col = 0;
@@ -51,8 +47,7 @@ void terminal_initialize()
     }   
 }
 
-size_t strlen(const char* str)
-{
+size_t strlen(const char* str) {
     size_t len = 0;
 
     while(str[len])
@@ -63,8 +58,7 @@ size_t strlen(const char* str)
     return len;
 }
 
-void print(const char* str)
-{
+void print(const char* str) {
     size_t len = strlen(str);
 
     for (int i = 0; i < len; i++)
@@ -73,8 +67,7 @@ void print(const char* str)
     }
 }
 
-void kernel_main()
-{
+void kernel_main() {
     terminal_initialize();
     
     print("THIS IS DEXTER!\n");
