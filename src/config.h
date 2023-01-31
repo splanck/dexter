@@ -2,5 +2,7 @@
 #define CONFIG_H
 
 #define DEXTER_TOTAL_INTERUPTS 512
+#define KERNEL_CODE_SELECTOR 0x08
+#define KERNEL_DATA_SELECTOR 0x10
 
 #endif

@@ -15,4 +15,7 @@ struct idtr_desc {
     uint32_t base;
 } __attribute__((packed));
 
+void idt_set(int i, void* address);
+void idt_init();
+
 #endif
