@@ -24,8 +24,8 @@ SECTIONS
         *(.bss)
     }
 
-    .s : ALIGN(4096)
+    .asm : ALIGN(4096)
     {
-        *(.s)
+        *(.asm)
     }
 }

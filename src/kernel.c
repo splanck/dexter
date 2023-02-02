@@ -1,4 +1,5 @@
 #include "kernel.h"
+#include "idt.h"
 
 uint16_t* video_mem = 0;
 uint16_t terminal_row = 0;
@@ -69,4 +70,7 @@ void kernel_main() {
     terminal_initialize();
     
     print("THIS IS DEXTER!\n");
+    
+    idt_init();
+    print("Interupt descriptor table initialized.\n");
 }
