@@ -1,5 +1,6 @@
 #include "kernel.h"
 #include "idt.h"
+#include "io.h"
 
 uint16_t* video_mem = 0;
 uint16_t terminal_row = 0;
@@ -73,4 +74,6 @@ void kernel_main() {
     
     idt_init();
     print("Interupt descriptor table initialized.\n");
+
+    //outb(0x60, 0xff);
 }
