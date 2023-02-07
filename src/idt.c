@@ -3,10 +3,21 @@
 #include "kernel.h"
 #include "memory.h"
 #include "console.h"
+#include "io.h"
 #include <stdint.h>
 
 struct idt_desc idt_descriptors[DEXTER_TOTAL_INTERUPTS];
 struct idtr_desc idtr_descriptor;
+
+void int21h_handler() {
+    print("Key pressed\n");
+
+    outb(0x20, 0x28);
+}
+
+void no_interrupt_handler() {
+    outb(0x20, 0x28);
+}
 
 void idt_zero() {
     print("Divide by zero error.\n");
@@ -28,7 +39,11 @@ void idt_init() {
     idtr_descriptor.limit = sizeof(idt_descriptors) - 1;
     idtr_descriptor.base = (uint32_t)idt_descriptors; 
 
+    for(int i=0; i < DEXTER_TOTAL_INTERUPTS; i++)
+        idt_set(i, no_interrupt);
+
     idt_set(0, idt_zero);
+    idt_set(0x21, int21h);
 
     idt_load(&idtr_descriptor);
 }
