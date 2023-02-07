@@ -2,6 +2,7 @@
 #include "config.h"
 #include "kernel.h"
 #include "memory.h"
+#include "console.h"
 #include <stdint.h>
 
 struct idt_desc idt_descriptors[DEXTER_TOTAL_INTERUPTS];
