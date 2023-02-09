@@ -9,7 +9,10 @@ void kernel_main() {
     print("THIS IS DEXTER!\n");
     
     idt_init();
-    print("Interupt descriptor table initialized.\n");
+    print("Interrupt descriptor table initialized.\n");
 
-    //outb(0x60, 0xff);
+    enable_interrupts();
+    print("Interrupts enabled.\n");
+
+    while(1);
 }
