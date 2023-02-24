@@ -23,8 +23,8 @@ idt_load:
 
     mov ebx, [ebp+8]
     lidt [ebx]
-    
-    pop ebp
+
+    pop ebp    
     ret
 
 int21h:

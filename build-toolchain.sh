@@ -2,8 +2,8 @@
 export PREFIX="$HOME/opt/cross"
 export TARGET=i686-elf
 export PATH="$PREFIX/bin:$PATH"
-export BINVER="2.39"
-export GCCVER="12.2.0"
+export BINVER="2.34"
+export GCCVER="10.2.0"
 
 mkdir -p $HOME/source
 cd $HOME/source
