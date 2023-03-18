@@ -6,7 +6,7 @@
 void kernel_main() {
     terminal_initialize();
     
-    print("THIS IS DEXTER!\n");
+    cprint("THIS IS DEXTER!\n\n", 14);
     
     idt_init();
     print("Interrupt descriptor table initialized.\n");
