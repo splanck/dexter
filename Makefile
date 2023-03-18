@@ -36,12 +36,13 @@ all: ./bin/boot.bin ./bin/kernel.bin
 ./build/string.o: ./src/string.c
 	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/string.c -o ./build/string.o
 
+./build/heap.o: ./src/heap.c
+	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/heap.c -o ./build/heap.o
+
 ./build/memory.o: ./src/memory.c
 	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/memory.c -o ./build/memory.o
 
 clean:
-	rm -rf ./bin/boot.bin
-	rm -rf ./bin/kernel.bin
-	rm -rf ./bin/os.bin
+	rm -rf ./bin
 	rm -rf ${FILES}
-	rm -rf ./build/kernelfull.o
+	rm -rf ./build
