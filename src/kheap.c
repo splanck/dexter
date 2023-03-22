@@ -1,7 +1,7 @@
-#include "kheap.h"
 #include "heap.h"
-#include "config.h"
+#include "kheap.h"
 #include "console.h"
+#include "config.h"
 
 struct heap kernel_heap;
 struct heap_table kernel_heap_table;
