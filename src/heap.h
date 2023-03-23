@@ -22,6 +22,10 @@ struct heap {
     void* saddr;
 };
 
+static int heap_validate_table(void* ptr, void* end, struct heap_table* table);
+static bool heap_validate_alignment(void* ptr);
 int heap_create(struct heap* heap, void* ptr, void* end, struct heap_table* table);
+void* heap_malloc(struct heap* heap, size_t size);
+void* heap_free(void* ptr);
 
 #endif
