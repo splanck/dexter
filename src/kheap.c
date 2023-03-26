@@ -17,3 +17,11 @@ void kheap_init() {
     if(res < 0)
         cprint("Heap creation failed.\n", 12);
 }
+
+void* kmalloc(size_t size) {
+    return heap_malloc(&kernel_heap, size);
+}
+
+void kfree(void* ptr) {
+    heap_free(&kernel_heap, ptr);
+}
