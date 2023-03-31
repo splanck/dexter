@@ -1,5 +1,5 @@
 C_COMPILER = i686-elf-gcc
-FILES = ./build/kernel.asm.o ./build/kernel.o ./build/idt.asm.o ./build/idt.o ./build/memory.o ./build/io.asm.o ./build/console.o ./build/string.o ./build/heap.o ./build/kheap.o ./build/paging.o
+FILES = ./build/kernel.asm.o ./build/kernel.o ./build/idt.asm.o ./build/idt.o ./build/memory.o ./build/io.asm.o ./build/paging.asm.o ./build/console.o ./build/string.o ./build/heap.o ./build/kheap.o ./build/paging.o
 INCLUDES = -I./src
 FLAGS = -g -ffreestanding -falign-jumps -falign-functions -falign-labels -falign-loops -fstrength-reduce -fomit-frame-pointer -finline-functions -Wno-unused-function -fno-builtin -Werror -Wno-unused-label -Wno-cpp -Wno-unused-parameter -nostdlib -nostartfiles -nodefaultlibs -Wall -O0 -Iinc
 
@@ -19,15 +19,18 @@ all: ./bin/boot.bin ./bin/kernel.bin
 ./build/kernel.asm.o: ./src/kernel.asm
 	nasm -f elf -g ./src/kernel.asm -o ./build/kernel.asm.o
 
-./build/kernel.o: ./src/kernel.c
-	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/kernel.c -o ./build/kernel.o
-
 ./build/idt.asm.o: ./src/idt.asm
 	nasm -f elf -g ./src/idt.asm -o ./build/idt.asm.o
 
 ./build/io.asm.o: ./src/io.asm
 	nasm -f elf -g ./src/io.asm -o ./build/io.asm.o
 
+./build/paging.asm.o: ./src/paging.asm
+	nasm -f elf -g ./src/paging.asm -o ./build/paging.asm.o
+
+./build/kernel.o: ./src/kernel.c
+	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/kernel.c -o ./build/kernel.o
+	
 ./build/console.o: ./src/console.c
 	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/console.c -o ./build/console.o
 
