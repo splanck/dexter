@@ -4,6 +4,7 @@
 #include "heap.h"
 #include "kheap.h"
 #include "paging.h"
+#include "disk.h"
 #include "console.h"
 
 static struct paging_4gb_chunk* kernel_chunk = 0;
@@ -48,6 +49,9 @@ void kernel_main() {
 
     enable_interrupts();
     cprint("Interrupts enabled.\n", 10);
+
+    char buf[512];
+    disk_read_sectors(0, 1, buf);
 
     while(1);
 }
