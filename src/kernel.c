@@ -43,6 +43,10 @@ void kernel_main() {
     start_paging();
     cprint("Paging enabled.\n", 9);
 
+    // Setup the disk
+    disk_search_and_init();
+    cprint("Primary disk initialized.\n", 8);
+
     // Initialize interrupt descriptor table
     idt_init();
     cprint("Interrupt descriptor table initialized.\n", 11);
