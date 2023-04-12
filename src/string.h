@@ -3,7 +3,11 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <stdbool.h>
 
-size_t strlen(const char* str);
+int strlen(const char* s);
+int strnlen(const char* s, int max);
+int tonumericdigit(char c);
+bool isdigit(char c);
 
 #endif
