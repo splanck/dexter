@@ -2,3 +2,6 @@
 Third time is a charm! Time to write a working X86 kernel from the ground up!
 
 A wiki has been setup to document Dexter which will start to be populated over the coming months. I will post the URL when it has sufficient content to be useful.
+
+There are no grand plans for Dexter at the moment except to create a functional small toy kernel and operating system. We are making up the details as we go.
+
