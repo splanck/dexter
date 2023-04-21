@@ -16,12 +16,12 @@ struct disk_stream* disk_streamer_new(int disk_id) {
 
 int diskstreamer_seek(struct disk_stream* stream, int pos) {
     stream->pos = pos;
-
     return 0;
 }
 
 int disk_streamer_close(struct disk_stream* stream) {
     kfree(stream);
+    return 0;
 }
 
 int disk_streamer_read(struct disk_stream* stream, void* out, int total) {

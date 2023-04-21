@@ -4,12 +4,32 @@ BITS 16
 CODE_SEG equ gdt_code - gdt_start
 DATA_SEG equ gdt_data - gdt_start
 
-_start:
-    jmp short start
-    nop
+jmp short start
+nop
 
- times 33 db 0
- 
+; FAT16 file system header
+OEMIdentifier           db 'DEXTER  '
+BytesPerSector          dw 0x200
+SectorsPerCluster       db 0x80
+ReservedSectors         dw 200
+FATCopies               db 0x02
+RootDirectoryEntries    dw 0x40
+TotalSectors            dw 0x00
+MediaType               db 0xF8
+SectorsPerFAT           dw 0x100
+SectorsPerTrack         dw 0x20
+TotalHeads              dw 0x40
+HiddenSectors           dd 0x00
+SectorsBig              dd 0x773594
+
+; Extended BPB
+DriveNumber             db 0x80
+WNTBIT                  db 0x00
+Signature               db 0x29
+VolumeID                dd 0xD105
+VolumeIDStr             db 'DEXTER BOOT'
+SystemIDStr             db 'FAT16   '
+
 start:
     jmp 0:step2
 
