@@ -35,6 +35,7 @@ void disk_search_and_init() {
     
     disk.type = DEXTER_DISK_TYPE_PHYSICAL;
     disk.sector_size = DEXTER_SECTOR_SIZE;
+    //disk.filesystem = fs_resolve(&disk);
 }
 
 struct disk* disk_get(int index) {

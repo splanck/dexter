@@ -26,6 +26,11 @@ int start_paging() {
     return 0;
 }
 
+void kernel_panic() {
+    print("\nOops. Something just went terribly wrong. PANIC!\n");
+    while(1);
+}
+
 void kernel_main() {
     // Initialize terminal for text mode
     terminal_initialize();

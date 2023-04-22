@@ -2,7 +2,6 @@
 #define FILE_H
 
 #include "../fs/pathparser.h"
-#include "../fs/disk.h"
 
 typedef unsigned int FILE_SEEK_MODE;
 enum {
@@ -19,6 +18,7 @@ enum {
     FILE_MODE_INVALID
 };
 
+struct disk;
 typedef void*(*FS_OPEN_FUNCTION)(struct disk* disk, struct path_part* path, FILE_MODE mode);
 typedef int*(*FS_RESOLVE_FUNCTION)(struct disk* disk);
 
@@ -35,7 +35,11 @@ struct file_descriptor {
     struct disk* disk;
 };
 
+static struct filesystem** fs_get_free_filesystem();
 void fs_init();
+void fs_load();
 int fopen(const char* filename, const char* mode);
+void fs_insert_filesystem(struct filesystem* filesystem);
+struct filesystem* fs_resolve(struct disk* disk);
 
 #endif

@@ -1,6 +1,8 @@
 #ifndef DISK_H
 #define DISK_H
 
+#include "../fs/file.h"
+
 typedef unsigned int DEXTER_DISK_TYPE;
 
 #define DEXTER_DISK_TYPE_PHYSICAL 0;
@@ -8,6 +10,7 @@ typedef unsigned int DEXTER_DISK_TYPE;
 struct disk {
     DEXTER_DISK_TYPE type;
     int sector_size;
+    struct filesystem* filesystem;
 };
 
 int disk_read_sectors(int lba, int total, void* buf);
