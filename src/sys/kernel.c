@@ -45,7 +45,7 @@ void kernel_main() {
 
     // Setup the disk
     disk_search_and_init();
-    cprint("Primary disk initialized.\n", 8);
+    cprint("Primary disk initialized.\n", 14);
 
     // Initialize interrupt descriptor table
     idt_init();

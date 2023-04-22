@@ -39,6 +39,9 @@ all: ./bin/boot.bin ./bin/kernel.bin
 ./build/console.o: ./src/lib/console.c
 	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/lib/console.c -o ./build/console.o
 
+./build/file.o: ./src/fs/file.c
+	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/fs/file.c -o ./build/file.o
+
 ./build/streamer.o: ./src/fs/streamer.c
 	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/fs/streamer.c -o ./build/streamer.o
 
