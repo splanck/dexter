@@ -1,11 +1,11 @@
-#include "pathparser.h"
-#include "string.h"
-#include "config.h"
-#include "memory.h"
-#include "kernel.h"
-#include "heap.h"
-#include "kheap.h"
-#include "status.h"
+#include "../fs/pathparser.h"
+#include "../lib/string.h"
+#include "../sys/config.h"
+#include "../mem/memory.h"
+#include "../sys/kernel.h"
+#include "../mem/heap.h"
+#include "../mem/kheap.h"
+#include "../sys/status.h"
 
 static int pathparser_path_valid_format(const char* filename) {
     int len = strnlen(filename, DEXTER_MAX_PATH);

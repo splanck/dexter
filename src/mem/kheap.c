@@ -1,8 +1,8 @@
-#include "heap.h"
-#include "kheap.h"
-#include "memory.h"
-#include "console.h"
-#include "config.h"
+#include "../mem/heap.h"
+#include "../mem/kheap.h"
+#include "../mem/memory.h"
+#include "../lib/console.h"
+#include "../sys/config.h"
 
 void kheap_init() {
     int total_table_entries = DEXTER_HEAP_SIZE_BYTES / DEXTER_HEAP_BLOCK_SIZE;

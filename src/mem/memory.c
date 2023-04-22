@@ -1,4 +1,4 @@
-#include "memory.h"
+#include "../mem/memory.h"
 
 void* memset(void* ptr, int c, size_t size) {
     char* c_ptr = (char*)ptr;

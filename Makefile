@@ -16,55 +16,55 @@ all: ./bin/boot.bin ./bin/kernel.bin
 
 ./bin/kernel.bin: $(FILES)
 	i686-elf-ld -g -relocatable $(FILES) -o ./build/kernelfull.o
-	i686-elf-gcc $(FLAGS) -T ./src/linker.ld -o ./bin/kernel.bin -ffreestanding -O0 -nostdlib ./build/kernelfull.o
+	i686-elf-gcc $(FLAGS) -T ./linker.ld -o ./bin/kernel.bin -ffreestanding -O0 -nostdlib ./build/kernelfull.o
 
-./bin/boot.bin: ./src/boot.asm
-	nasm -f bin ./src/boot.asm -o ./bin/boot.bin
+./bin/boot.bin: ./src/sys/boot.asm
+	nasm -f bin ./src/sys/boot.asm -o ./bin/boot.bin
 
-./build/kernel.asm.o: ./src/kernel.asm
-	nasm -f elf -g ./src/kernel.asm -o ./build/kernel.asm.o
+./build/kernel.asm.o: ./src/sys/kernel.asm
+	nasm -f elf -g ./src/sys/kernel.asm -o ./build/kernel.asm.o
 
-./build/idt.asm.o: ./src/idt.asm
-	nasm -f elf -g ./src/idt.asm -o ./build/idt.asm.o
+./build/idt.asm.o: ./src/sys/idt.asm
+	nasm -f elf -g ./src/sys/idt.asm -o ./build/idt.asm.o
 
-./build/io.asm.o: ./src/io.asm
-	nasm -f elf -g ./src/io.asm -o ./build/io.asm.o
+./build/io.asm.o: ./src/sys/io.asm
+	nasm -f elf -g ./src/sys/io.asm -o ./build/io.asm.o
 
-./build/paging.asm.o: ./src/paging.asm
-	nasm -f elf -g ./src/paging.asm -o ./build/paging.asm.o
+./build/paging.asm.o: ./src/mem/paging.asm
+	nasm -f elf -g ./src/mem/paging.asm -o ./build/paging.asm.o
 
-./build/kernel.o: ./src/kernel.c
-	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/kernel.c -o ./build/kernel.o
+./build/kernel.o: ./src/sys/kernel.c
+	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/sys/kernel.c -o ./build/kernel.o
 	
-./build/console.o: ./src/console.c
-	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/console.c -o ./build/console.o
+./build/console.o: ./src/lib/console.c
+	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/lib/console.c -o ./build/console.o
 
-./build/streamer.o: ./src/streamer.c
-	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/streamer.c -o ./build/streamer.o
+./build/streamer.o: ./src/fs/streamer.c
+	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/fs/streamer.c -o ./build/streamer.o
 
-./build/pathparser.o: ./src/pathparser.c
-	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/pathparser.c -o ./build/pathparser.o
+./build/pathparser.o: ./src/fs/pathparser.c
+	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/fs/pathparser.c -o ./build/pathparser.o
 
-./build/disk.o: ./src/disk.c
-	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/disk.c -o ./build/disk.o
+./build/disk.o: ./src/fs/disk.c
+	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/fs/disk.c -o ./build/disk.o
 
-./build/idt.o: ./src/idt.c
-	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/idt.c -o ./build/idt.o
+./build/idt.o: ./src/sys/idt.c
+	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/sys/idt.c -o ./build/idt.o
 
-./build/string.o: ./src/string.c
-	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/string.c -o ./build/string.o
+./build/string.o: ./src/lib/string.c
+	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/lib/string.c -o ./build/string.o
 
-./build/paging.o: ./src/paging.c
-	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/paging.c -o ./build/paging.o
+./build/paging.o: ./src/mem/paging.c
+	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/mem/paging.c -o ./build/paging.o
 
-./build/kheap.o: ./src/kheap.c
-	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/kheap.c -o ./build/kheap.o
+./build/kheap.o: ./src/mem/kheap.c
+	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/mem/kheap.c -o ./build/kheap.o
 
-./build/heap.o: ./src/heap.c
-	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/heap.c -o ./build/heap.o
+./build/heap.o: ./src/mem/heap.c
+	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/mem/heap.c -o ./build/heap.o
 
-./build/memory.o: ./src/memory.c
-	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/memory.c -o ./build/memory.o
+./build/memory.o: ./src/mem/memory.c
+	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/mem/memory.c -o ./build/memory.o
 
 clean:
 	rm -rf ./bin

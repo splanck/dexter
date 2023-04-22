@@ -1,11 +1,11 @@
-#include "kernel.h"
-#include "idt.h"
-#include "io.h"
-#include "heap.h"
-#include "kheap.h"
-#include "paging.h"
-#include "disk.h"
-#include "console.h"
+#include "../sys/kernel.h"
+#include "../sys/idt.h"
+#include "../sys/io.h"
+#include "../mem/heap.h"
+#include "../mem/kheap.h"
+#include "../mem/paging.h"
+#include "../fs/disk.h"
+#include "../lib/console.h"
 
 static struct paging_4gb_chunk* kernel_chunk = 0;
 
