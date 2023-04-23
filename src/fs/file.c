@@ -49,12 +49,12 @@ static struct file_descriptor* file_get_descriptor(int fd) {
     return file_descriptors[index];
 }
 
-struct filesystem* fs_resolve(struct disk* disk) {
+struct filesystem* fs_resolve(struct disk* disk)
+{
     struct filesystem* fs = 0;
-
-    for(int x = 0; x < DEXTER_MAX_FILESYSTEMS; x++) {
-        if(!filesystems[x] && filesystems[x]->resolve(disk)) {
-            fs = filesystems[x];
+    for (int i = 0; i < DEXTER_MAX_FILESYSTEMS; i++) {
+        if (filesystems[i] != 0 && filesystems[i]->resolve(disk) == 0) {
+            fs = filesystems[i];
             break;
         }
     }
