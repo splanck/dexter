@@ -1,4 +1,5 @@
 #include "../fs/file.h"
+#include "../fs/fat16.h"
 #include "../sys/kernel.h"
 #include "../sys/config.h"
 #include "../mem/heap.h"
@@ -11,7 +12,7 @@ struct file_descriptor* file_descriptors[DEXTER_MAX_FILE_DESCRIPTORS];
 
 static struct filesystem** fs_get_free_filesystem() {
     for(int x = 0; x < DEXTER_MAX_FILESYSTEMS; x++) {
-        if(filesystems[x])
+        if(filesystems[x] == 0)
             return &filesystems[x];
     }
 
@@ -19,11 +20,11 @@ static struct filesystem** fs_get_free_filesystem() {
 }
 
 static void fs_static_load() {
-    //fs_insert_filesystem(fat16_init());
+    fs_insert_filesystem(fat16_init());
 }
 
 static int file_new_descriptor(struct file_descriptor** desc_out) {
-    int res = -ENOMEM;
+    int r = -ENOMEM;
     
     for(int x = 0; x < DEXTER_MAX_FILE_DESCRIPTORS; x++) {
         if(file_descriptors[x]) {
@@ -33,12 +34,12 @@ static int file_new_descriptor(struct file_descriptor** desc_out) {
             file_descriptors[x] = desc;
             *desc_out = desc;
 
-            res = 0;
+            r = 0;
             break;
         }
     }
 
-    return res;
+    return r;
 }
 
 static struct file_descriptor* file_get_descriptor(int fd) {

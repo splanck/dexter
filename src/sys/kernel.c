@@ -5,6 +5,7 @@
 #include "../mem/kheap.h"
 #include "../mem/paging.h"
 #include "../fs/disk.h"
+#include "../fs/file.h"
 #include "../lib/console.h"
 
 static struct paging_4gb_chunk* kernel_chunk = 0;
@@ -43,10 +44,14 @@ void kernel_main() {
 
     memory_allocation_test();
     cprint("Memory allocation test completed.\n", 12);
+
+    // Inititalize file systems
+    fs_init();
+    cprint("File systems initialized.\n", 11);
     
     // Setup and enable memory paging
     start_paging();
-    cprint("Paging enabled.\n", 9);
+    cprint("Paging enabled.\n", 10);
 
     // Setup the disk
     disk_search_and_init();
@@ -54,14 +59,13 @@ void kernel_main() {
 
     // Initialize interrupt descriptor table
     idt_init();
-    cprint("Interrupt descriptor table initialized.\n", 11);
+    cprint("Interrupt descriptor table initialized.\n", 13);
 
     enable_interrupts();
-    cprint("Interrupts enabled.\n", 10);
+    cprint("Interrupts enabled.\n", 12);
 
     char buf[512];
     disk_read_sectors(0, 1, buf);
-
 
     update_cursor(15,15);
     //print("Hello");

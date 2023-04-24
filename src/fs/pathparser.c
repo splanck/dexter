@@ -85,16 +85,16 @@ void pathparser_free(struct path_root* root) {
 }
 
 struct path_root* pathparser_parse(const char* path, const char* current_directory_path) {
-    int res = 0;
+    int r = 0;
     const char* tmp_path = path;
     struct path_root* path_root = 0;
 
     if (strlen(path) > DEXTER_MAX_PATH) goto out;
 
-    res = pathparser_get_drive_by_path(&tmp_path);
-    if (res < 0) goto out;
+    r = pathparser_get_drive_by_path(&tmp_path);
+    if (r < 0) goto out;
 
-    path_root = pathparser_create_root(res);
+    path_root = pathparser_create_root(r);
     if (!path_root) goto out;
 
     struct path_part* first_part = pathparser_parse_path_part(NULL, &tmp_path);

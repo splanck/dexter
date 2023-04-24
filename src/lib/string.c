@@ -28,8 +28,6 @@ bool isdigit(char c) {
 }
 
 char* strcpy(char *destination, char *source) {
-    char* res = destination;
-
     while (*source != '\0') {
         *destination = *source;
         source++;
@@ -38,5 +36,5 @@ char* strcpy(char *destination, char *source) {
 
     *destination = '\0';
     
-    return res;
+    return destination;
 }
