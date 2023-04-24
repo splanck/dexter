@@ -26,3 +26,17 @@ int tonumericdigit(char c) {
 bool isdigit(char c) {
     return c >= 48 && c <= 57;
 }
+
+char* strcpy(char *destination, char *source) {
+    char* res = destination;
+
+    while (*source != '\0') {
+        *destination = *source;
+        source++;
+        destination++;
+    }
+
+    *destination = '\0';
+    
+    return res;
+}

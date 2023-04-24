@@ -62,5 +62,9 @@ void kernel_main() {
     char buf[512];
     disk_read_sectors(0, 1, buf);
 
+
+    update_cursor(15,15);
+    //print("Hello");
+
     while(1);
 }

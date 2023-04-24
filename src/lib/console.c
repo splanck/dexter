@@ -1,4 +1,5 @@
 #include "../lib/console.h"
+#include "../sys/io.h"
 #include "../sys/kernel.h"
 #include "../lib/string.h"
 
@@ -53,4 +54,13 @@ void cprint(const char* str, int c) {
 
 void print(const char* str) {
     cprint(str, 15);
+}
+
+void update_cursor(int x, int y) {
+	uint16_t pos = y * VGA_WIDTH + x;
+ 
+	outb(0x3D4, 0x0F);
+	outb(0x3D5, (uint8_t) (pos & 0xFF));
+	outb(0x3D4, 0x0E);
+	outb(0x3D5, (uint8_t) ((pos >> 8) & 0xFF));
 }

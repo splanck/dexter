@@ -14,5 +14,6 @@ void terminal_writechar(char c, char colour);
 void terminal_initialize();
 void cprint(const char* str, int c);
 void print(const char* str);
+void update_cursor(int x, int y);
 
 #endif
