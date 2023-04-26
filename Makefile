@@ -72,6 +72,9 @@ all: ./bin/boot.bin ./bin/kernel.bin
 ./build/memory.o: ./src/mem/memory.c
 	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/mem/memory.c -o ./build/memory.o
 
+run:
+	qemu-system-i386 -hda ./images/dexter.img
+
 clean:
 	rm -rf ./bin
 	rm -rf ${FILES}
