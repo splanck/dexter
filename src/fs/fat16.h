@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 #include "../fs/file.h"
+#include "../fs/disk.h"
+#include "../fs/streamer.h"
 
 typedef unsigned int FAT_ITEM_TYPE;
 
@@ -71,6 +73,35 @@ struct fat_directory_item {
     uint16_t low_16_bits_first_cluster;
     uint32_t filesize; 
 } __attribute__((packed)); 
+
+struct fat_directory {
+    struct fat_directory_item* item;
+    int total;
+    int sector_pos;
+    int ending_sector_pos;
+};
+
+struct fat_item {
+    union {
+        struct fat_directory_item* item;
+        struct fat_directory* directory;
+    };
+
+    FAT_ITEM_TYPE type;
+};
+
+struct fat_item_descriptor {
+    struct fat_item* item;
+    uint32_t pos;
+};
+
+struct fat_private {
+    struct fat_h header;
+    struct fat_directory directory;
+    struct disk_stream* cluster_read_stream;
+    struct disk_stream* fat_read_stream;
+    struct disk_stream* directory_stream;
+};
 
 struct filesystem* fat16_init();
 

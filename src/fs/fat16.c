@@ -1,5 +1,4 @@
 #include "../fs/fat16.h"
-#include "../fs/disk.h"
 #include "../sys/status.h"
 #include "../lib/string.h"
 
