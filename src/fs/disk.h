@@ -10,7 +10,9 @@ typedef unsigned int DEXTER_DISK_TYPE;
 struct disk {
     DEXTER_DISK_TYPE type;
     int sector_size;
+    int id;
     struct filesystem* filesystem;
+    void* fs_private;
 };
 
 int disk_read_sectors(int lba, int total, void* buf);
