@@ -61,6 +61,25 @@ int fat16_resolve(struct disk* disk) {
     struct fat_private* fat_private = kzalloc(sizeof(struct fat_private));
     fat16_init_private(disk, fat_private);
 
+    struct disk_stream* stream = disk_streamer_new(disk->id);
+
+    if(!stream) {
+        r = -ENOMEM;
+        goto out;
+    }
+
+    int x = disk_streamer_read(stream, &fat_private->header, sizeof(fat_private->header));
+
+    if(x != DEXTER_ALL_OK) {
+        r = -EIO;
+        goto out;
+    }
+
+    if(fat_private->header.shared.extended_header.signature != 0x29) {
+        r = -EFSNOTUS;
+        goto out;
+    }
+out:
     return r;
 }
 
