@@ -92,7 +92,7 @@ struct fat_item_descriptor
 struct fat_private 
 {
     struct fat_h header;
-    struct fat_directory directory;
+    struct fat_directory root_directory;
     struct disk_stream* cluster_read_stream;
     struct disk_stream* fat_read_stream;
     struct disk_stream* directory_stream;
@@ -130,8 +130,44 @@ int fat16_get_total_items_for_directory(struct disk* disk, uint32_t directory_st
     struct fat_directory_item empty_item;
 
     memset(&empty_item, 0, sizeof(empty_item));
-    
-    return 0;
+
+    struct fat_private* fat_private = disk->fs_private;
+
+    int r = 0;
+    int i = 0;
+    int directory_start_pos = directory_start_sector * disk->sector_size;
+    struct disk_stream* stream = fat_private->directory_stream;
+
+    if(disk_streamer_seek(stream, directory_start_pos) != DEXTER_ALL_OK)
+    {
+        r = -EIO;
+        goto out;
+    }
+
+    while(1)
+    {
+        if(disk_streamer_read(stream, &item, sizeof(item)) != DEXTER_ALL_OK)
+        {
+            r = -EIO;
+            goto out;
+        }
+
+        if(item.filemame[0] == 0x00)
+        {
+            break;
+        }
+
+        if(item.filemame[0] == 0xE5)
+        {
+            continue;
+        }
+
+        i++;
+    }
+
+    r = i;
+out:
+    return r;
 }
 
 int fat16_get_root_directory(struct disk* disk, struct fat_private* fat_private, struct fat_directory* directory) 
@@ -152,7 +188,7 @@ int fat16_get_root_directory(struct disk* disk, struct fat_private* fat_private,
         total_sectors++;
     }
 
-    int total_items = fat16_get_total_items_for_directory(fat_private, root_dir_sector_pos);
+    int total_items = fat16_get_total_items_for_directory(disk, root_dir_sector_pos);
 
     struct fat_directory_item* dir = kzalloc(root_dir_size);
 
@@ -164,7 +200,7 @@ int fat16_get_root_directory(struct disk* disk, struct fat_private* fat_private,
 
     struct disk_stream* stream = fat_private->directory_stream;
 
-    if(diskstreamer_seek(stream, fat16_sector_to_absolute(disk, root_dir_sector_pos)) != DEXTER_ALL_OK)
+    if(disk_streamer_seek(stream, fat16_sector_to_absolute(disk, root_dir_sector_pos)) != DEXTER_ALL_OK)
     {
         r = -EIO;
         goto out;
@@ -192,6 +228,9 @@ int fat16_resolve(struct disk* disk)
     struct fat_private* fat_private = kzalloc(sizeof(struct fat_private));
     fat16_init_private(disk, fat_private);
 
+    disk->fs_private = fat_private;
+    disk->filesystem = &fat16_fs;
+
     struct disk_stream* stream = disk_streamer_new(disk->id);
 
     if(!stream) 
@@ -214,13 +253,24 @@ int fat16_resolve(struct disk* disk)
         goto out;
     }
 
-    if(fat16_get_root_directory(disk, &fat_private->root_directory) != DEXTER_ALL_OK) 
+    if(fat16_get_root_directory(disk, fat_private, &fat_private->root_directory) != DEXTER_ALL_OK) 
     {
         r = -EIO;
         goto out;
     }
 
 out:
+    if(stream)
+    {
+        disk_streamer_close(stream);
+    }
+
+    if(r < 0)
+    {
+        kfree(fat_private);
+        disk->fs_private = 0;
+    }
+
     return r;
 }
 

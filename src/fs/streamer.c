@@ -19,7 +19,7 @@ struct disk_stream* disk_streamer_new(int disk_id)
     return streamer;
 }
 
-int diskstreamer_seek(struct disk_stream* stream, int pos) 
+int disk_streamer_seek(struct disk_stream* stream, int pos) 
 {
     stream->pos = pos;
     return 0;
