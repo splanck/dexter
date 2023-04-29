@@ -7,7 +7,8 @@ typedef unsigned int DEXTER_DISK_TYPE;
 
 #define DEXTER_DISK_TYPE_PHYSICAL 0;
 
-struct disk {
+struct disk 
+{
     DEXTER_DISK_TYPE type;
     int sector_size;
     int id;

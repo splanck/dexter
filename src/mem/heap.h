@@ -12,12 +12,14 @@
 
 typedef unsigned char HEAP_BLOCK_TABLE_ENTRY;
 
-struct heap_table {
+struct heap_table 
+{
     HEAP_BLOCK_TABLE_ENTRY* entries;
     size_t total;
 };
 
-struct heap {
+struct heap 
+{
     struct heap_table* table;
     void* saddr;
 };

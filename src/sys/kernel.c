@@ -10,15 +10,18 @@
 
 static struct paging_4gb_chunk* kernel_chunk = 0;
 
-int memory_allocation_test() {
+int memory_allocation_test() 
+{
     void* ptr = kmalloc(50);
     void* ptr2 = kmalloc(5000);
 
     if(ptr == ptr2) ;
+
     return 0;
 }
 
-int start_paging() {
+int start_paging() 
+{
     kernel_chunk = paging_new_4gb(PAGING_IS_WRITEABLE | PAGING_IS_PRESENT | PAGING_ACCESS_FROM_ALL);
     paging_switch(paging_4gb_chunk_get_directory(kernel_chunk));
     
@@ -27,12 +30,14 @@ int start_paging() {
     return 0;
 }
 
-void kernel_panic() {
+void kernel_panic() 
+{
     print("\nOops. Something just went terribly wrong. PANIC!\n");
     while(1);
 }
 
-void kernel_main() {
+void kernel_main() 
+{
     // Initialize terminal for text mode
     terminal_initialize();
     
