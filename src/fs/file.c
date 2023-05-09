@@ -1,7 +1,9 @@
 #include "../fs/file.h"
 #include "../fs/fat16.h"
+#include "../fs/disk.h"
 #include "../sys/kernel.h"
 #include "../sys/config.h"
+#include "../lib/string.h"
 #include "../mem/heap.h"
 #include "../mem/kheap.h"
 #include "../sys/status.h"
@@ -103,8 +105,57 @@ void fs_init()
     fs_load();
 }
 
+FILE_MODE file_get_mode_by_str(const char* str)
+{
+    FILE_MODE mode = FILE_MODE_INVALID;
+
+    if(strncmp(str, "r", 1) == 0)
+    {
+        mode = FILE_MODE_READ;
+    }
+    else if(strncmp(str, "", 1) == 0) 
+    {
+        mode = FILE_MODE_WRITE;
+    }
+    else if(strncmp(str, "a", 1) == 0) 
+    {
+        mode = FILE_MODE_APPEND;
+    }
+    
+    return mode;
+}
+
 int fopen(const char* filename, const char* mode) 
 {
-    return -EIO;
+    int r = 0;
+    struct path_root* root_path = pathparser_parse(filename, NULL);
+
+    if(!root_path) 
+    {
+        r = -EINVARG;
+        goto out;
+    }
+
+    if(!root_path->first)
+    {
+        r = -EINVARG;
+        goto out;
+    }
+
+    struct disk* disk = disk_get(root_path->drive_no);
+
+    if(!disk)
+    {
+        r = -EIO;
+        goto out;
+    }
+
+    if(!disk->filesystem)
+    {
+        r = -EIO;
+        goto out;
+    }
+out:
+    return r;
 }
 
