@@ -121,11 +121,11 @@ FILE_MODE file_get_mode_by_str(const char* str)
     {
         mode = FILE_MODE_APPEND;
     }
-    
+
     return mode;
 }
 
-int fopen(const char* filename, const char* mode) 
+int fopen(const char* filename, const char* mode_str) 
 {
     int r = 0;
     struct path_root* root_path = pathparser_parse(filename, NULL);
@@ -155,7 +155,41 @@ int fopen(const char* filename, const char* mode)
         r = -EIO;
         goto out;
     }
+
+    FILE_MODE mode = file_get_mode_by_str(mode_str);
+
+    if(mode == FILE_MODE_INVALID)
+    {
+        r = -EINVARG;
+        goto out;
+    }
+
+    void* descriptor_private_data = disk->filesystem->open(disk, root_path->first, mode);
+
+    if(ISERR(descriptor_private_data))
+    {
+        r = ERROR_I(descriptor_private_data);
+        goto out;
+    }
+
+    struct file_descriptor* desc = 0;
+    r = file_new_descriptor(&desc);
+
+    if(r < 0)
+    {
+        goto out;
+    }
+
+    desc->filesystem = disk->filesystem;
+    desc->disk = disk;
+    desc->private = descriptor_private_data;
+    r = desc->index;
+
 out:
+    if(r < 0)
+    {
+        return 0;
+    }
+
     return r;
 }
-

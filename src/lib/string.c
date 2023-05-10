@@ -89,6 +89,24 @@ int strncmp(const char *s1, const char *s2, size_t n)
     }
 }
 
+char* strncpy(char *dest, const char *src, size_t n) 
+{
+    size_t i;
+    
+    for (i = 0; i < n && src[i] != '\0'; i++) 
+    {
+        dest[i] = src[i];
+    }
+    
+    for ( ; i < n; i++) 
+    {
+        dest[i] = '\0';
+    }
+    
+    return dest;
+}
+
+
 int strlen(const char* s) 
 {
     int len = 0;
@@ -129,7 +147,17 @@ int tonumericdigit(char c)
     return c - 48;
 }
 
-int toupper(int c) 
+char tolower(char c) 
+{
+    if (c >= 'A' && c <= 'Z') 
+    {
+        return c + ('a' - 'A');
+    }
+    
+    return c;
+}
+
+char toupper(char c) 
 {
     if (c >= 'a' && c <= 'z') 
     {

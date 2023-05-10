@@ -38,8 +38,8 @@ struct file_descriptor {
 static struct filesystem** fs_get_free_filesystem();
 void fs_init();
 void fs_load();
-int fopen(const char* filename, const char* mode);
 void fs_insert_filesystem(struct filesystem* filesystem);
 struct filesystem* fs_resolve(struct disk* disk);
+int fopen(const char* filename, const char* mode_str);
 
 #endif
