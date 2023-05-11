@@ -165,9 +165,39 @@ void fat16_get_full_relative_filename(struct fat_directory_item* item, char* out
     }
 }
 
-struct fat_item *fat16_new_fat_item_for_directory_item(struct disk* disk, struct fat_directory_item* f_item)
+struct fat_directory *fat16_load_fat_directory(struct disk* disk, struct fat_directory_item* item)
 {
     return 0;
+}
+
+struct fat_directory_item *fat16_clone_directory_item(struct fat_directory_item* item, int size)
+{
+    return 0;
+}
+
+struct fat_item *fat16_new_fat_item_for_directory_item(struct disk* disk, struct fat_directory_item* item)
+{
+    struct fat_item* f_item = kzalloc(sizeof(struct fat_item));
+
+    if(!f_item)
+    {
+        f_item = 0;
+        
+        goto out;
+    }
+
+    if(item->attribute & FAT_FILE_SUBDIRECTORY)
+    {
+        f_item->directory = fat16_load_fat_directory(disk, item);
+        f_item->type = FAT_ITEM_TYPE_DIRECTORY;
+        
+        goto out;
+    }
+
+    f_item->type = FAT_ITEM_TYPE_FILE;
+    f_item->item = fat16_clone_directory_item(item, sizeof(struct fat_directory_item));
+out:
+    return f_item;
 }
 
 struct fat_item *fat16_find_item_in_directory(struct disk *disk, struct fat_directory* dir, const char* name)
