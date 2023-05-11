@@ -39,17 +39,18 @@ int fat16_sector_to_absolute(struct disk *disk, int sector)
 
 int fat16_get_total_items_for_directory(struct disk *disk, uint32_t directory_start_sector)
 {
+    int r = 0;
+    int i = 0;
+    
     struct fat_directory_item item;
     struct fat_directory_item empty_item;
 
     memset(&empty_item, 0, sizeof(empty_item));
 
     struct fat_private *fat_private = disk->fs_private;
-
-    int r = 0;
-    int i = 0;
-    int directory_start_pos = directory_start_sector * disk->sector_size;
     struct disk_stream *stream = fat_private->directory_stream;
+
+    int directory_start_pos = directory_start_sector * disk->sector_size;
 
     if (disk_streamer_seek(stream, directory_start_pos) != DEXTER_ALL_OK)
     {
@@ -165,14 +166,58 @@ void fat16_get_full_relative_filename(struct fat_directory_item* item, char* out
     }
 }
 
-struct fat_directory *fat16_load_fat_directory(struct disk* disk, struct fat_directory_item* item)
+int fat16_get_first_cluster(struct fat_directory_item* item)
 {
     return 0;
 }
 
+struct fat_directory *fat16_load_fat_directory(struct disk* disk, struct fat_directory_item* item)
+{
+    int r = 0;
+
+    struct fat_directory* dir = 0;
+    struct fat_private* fat_private = disk->fs_private;
+
+    // If the fat directory item is not a subdirectory we can't load it, so we need to report invalid args.
+    if(!(item->attribute & FAT_FILE_SUBDIRECTORY))
+    {
+        r = -EINVARG;
+        goto out;
+    }
+
+    dir = kzalloc(sizeof(struct fat_directory));
+
+    if(!dir)
+    {
+        r = -ENOMEM;
+        goto out;
+    }
+
+out:
+    return dir;
+}
+
 struct fat_directory_item *fat16_clone_directory_item(struct fat_directory_item* item, int size)
 {
-    return 0;
+    struct fat_directory_item* item_copy = 0; kzalloc(size);
+    
+    // If requested allocation size is smaller than a fat_directory_item, abort operation.
+    if(size < sizeof(struct fat_directory_item))
+    {
+        goto out;
+    }
+
+    item_copy = kzalloc(size);
+
+    if(!item_copy)
+    {
+        goto out;
+    }
+
+    memcpy(item_copy, item, size);
+
+out:
+    return item_copy;
 }
 
 struct fat_item *fat16_new_fat_item_for_directory_item(struct disk* disk, struct fat_directory_item* item)
