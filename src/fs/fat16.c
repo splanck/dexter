@@ -3,6 +3,7 @@
 #include "../fs/disk.h"
 #include "../fs/streamer.h"
 #include "../sys/status.h"
+#include "../sys/kernel.h"
 #include "../lib/string.h"
 #include "../mem/heap.h"
 #include "../mem/kheap.h"
@@ -83,7 +84,7 @@ struct fat_item
     FAT_ITEM_TYPE type;
 };
 
-struct fat_item_descriptor 
+struct fat_file_descriptor 
 {
     struct fat_item* item;
     uint32_t pos;
@@ -221,6 +222,11 @@ out:
     return r;    
 }
 
+struct fat_item* fat16_get_directory_entry(struct disk* disk, struct path_part* path)
+{
+    return 0;
+}
+
 int fat16_resolve(struct disk* disk) 
 {
     int r = 0;
@@ -276,5 +282,27 @@ out:
 
 void* fat16_open(struct disk* disk, struct path_part* path, FILE_MODE mode) 
 {
-    return 0;
+    if(mode != FILE_MODE_READ)
+    {
+        return ERROR(-ERDONLY);
+    }
+
+    struct fat_file_descriptor* descriptor = 0;
+    descriptor = kzalloc(sizeof(struct fat_file_descriptor));
+    
+    if(!descriptor)
+    {
+        return ERROR(-ENOMEM);
+    }
+
+    descriptor->item = fat16_get_directory_entry(disk, path);
+
+    if(!descriptor->item)
+    {
+        return ERROR(-EIO);
+    }
+
+    descriptor->pos = 0;
+
+    return descriptor;
 }
