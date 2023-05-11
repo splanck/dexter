@@ -193,6 +193,8 @@ struct fat_directory *fat16_load_fat_directory(struct disk* disk, struct fat_dir
         goto out;
     }
 
+    int cluster = fat16_get_first_cluster(item);
+
 out:
     return dir;
 }
