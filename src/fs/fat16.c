@@ -3,6 +3,7 @@
 #include "../fs/disk.h"
 #include "../fs/streamer.h"
 #include "../sys/status.h"
+#include "../sys/config.h"
 #include "../sys/kernel.h"
 #include "../lib/string.h"
 #include "../mem/heap.h"
@@ -133,9 +134,58 @@ out:
     return r;
 }
 
-struct fat_item *fat16_find_item_in_directory(struct disk *disk, struct fat_directory* dir, const char* path)
+void fat16_to_proper_string(char** out, const char* in)
+{
+    while(*in != 0x00 && *in != 0x20)
+    {
+        **out = *in;
+        *out += 1;
+        in += 1;
+    }
+
+    if(*in == 0x20)
+    {
+        **out = 0x00;
+    }
+}
+
+void fat16_get_full_relative_filename(struct fat_directory_item* item, char* out, int max_len) 
+{
+    memset(out, 0x00, max_len);
+    char *out_tmp = out;
+
+    // Retrieve filename string from fat directory item.
+    fat16_to_proper_string(&out_tmp, (const char*)item->filemame);
+
+    // If filename has an extension, append extension to filename string.
+    if(item->ext[0] != 0x00 && item->ext[0] != 0x20)
+    {
+        *out_tmp++ = '.';
+        fat16_to_proper_string(&out_tmp, (const char*)item->ext);
+    }
+}
+
+struct fat_item *fat16_new_fat_item_for_directory_item(struct disk* disk, struct fat_directory_item* f_item)
 {
     return 0;
+}
+
+struct fat_item *fat16_find_item_in_directory(struct disk *disk, struct fat_directory* dir, const char* name)
+{
+    struct fat_item* f_item = 0;
+    char tmp_filename[DEXTER_MAX_PATH];
+
+    for(int i = 0; i < dir->total; i++)
+    {
+        fat16_get_full_relative_filename(&dir->item[i], tmp_filename, sizeof(tmp_filename));
+
+        if(istrncmp(tmp_filename, name, sizeof(tmp_filename)))
+        {
+            f_item = fat16_new_fat_item_for_directory_item(disk, &dir->item[i]);
+        }
+    }
+
+    return f_item;
 }
 
 struct fat_item *fat16_get_directory_entry(struct disk *disk, struct path_part *path)

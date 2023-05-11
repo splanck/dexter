@@ -27,7 +27,11 @@ static void fat16_init_private(struct disk *disk, struct fat_private *private);
 int fat16_sector_to_absolute(struct disk *disk, int sector);
 int fat16_get_total_items_for_directory(struct disk *disk, uint32_t directory_start_sector);
 int fat16_get_root_directory(struct disk *disk, struct fat_private *fat_private, struct fat_directory *directory);
-struct fat_item *fat16_get_directory_entry(struct disk *disk, struct path_part *path);
+void fat16_to_proper_string(char** out, const char* in);
+struct fat_item *fat16_get_directory_entry(struct disk* disk, struct path_part *path);
+void fat16_get_full_relative_filename(struct fat_directory_item* item, char* out, int max_len);
+struct fat_item *fat16_new_fat_item_for_directory_item(struct disk* disk, struct fat_directory_item* f_item);
+struct fat_item *fat16_find_item_in_directory(struct disk* disk, struct fat_directory* dir, const char* name);
 int fat16_resolve(struct disk *disk);
 void *fat16_open(struct disk *disk, struct path_part *path, FILE_MODE mode);
 
