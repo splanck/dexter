@@ -2,8 +2,7 @@
 #define FAT16_H
 
 #include <stdint.h>
-
-typedef unsigned int FAT_ITEM_TYPE;
+#include "../fs/fat_header.h"
 
 #define FAT_ITEM_TYPE_DIRECTORY 0
 #define FAT_ITEM_TYPE_FILE 1
@@ -24,5 +23,12 @@ typedef unsigned int FAT_ITEM_TYPE;
 
 
 struct filesystem* fat16_init();
+static void fat16_init_private(struct disk *disk, struct fat_private *private);
+int fat16_sector_to_absolute(struct disk *disk, int sector);
+int fat16_get_total_items_for_directory(struct disk *disk, uint32_t directory_start_sector);
+int fat16_get_root_directory(struct disk *disk, struct fat_private *fat_private, struct fat_directory *directory);
+struct fat_item *fat16_get_directory_entry(struct disk *disk, struct path_part *path);
+int fat16_resolve(struct disk *disk);
+void *fat16_open(struct disk *disk, struct path_part *path, FILE_MODE mode);
 
 #endif
