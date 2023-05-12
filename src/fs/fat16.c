@@ -171,9 +171,15 @@ int fat16_get_first_cluster(struct fat_directory_item* item)
     return 0;
 }
 
+int fat16_cluster_to_sector(struct fat_private* fat_private, int cluster)
+{
+    return 0;
+}
+
 struct fat_directory *fat16_load_fat_directory(struct disk* disk, struct fat_directory_item* item)
 {
     int r = 0;
+    r++;
 
     struct fat_directory* dir = 0;
     struct fat_private* fat_private = disk->fs_private;
@@ -194,6 +200,11 @@ struct fat_directory *fat16_load_fat_directory(struct disk* disk, struct fat_dir
     }
 
     int cluster = fat16_get_first_cluster(item);
+    int cluster_sector = fat16_cluster_to_sector(fat_private, cluster);
+    int total_items = fat16_get_total_items_for_directory(disk, cluster_sector);
+    dir->total = total_items;
+    int directory_size = dir->total * sizeof(struct fat_directory_item);
+    dir->item = kzalloc(directory_size);
 
 out:
     return dir;

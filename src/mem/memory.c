@@ -1,4 +1,31 @@
 #include "../mem/memory.h"
+#include "../mem/heap.h"
+
+int memmove(void *dest, const void *src, size_t n) 
+{
+    char *d = dest;
+    const char *s = src;
+
+    if (s < d)
+    {
+        s += n;
+        d += n;
+    
+        while (n--) 
+        {
+            *(--d) = *(--s);
+        }
+    } 
+    else 
+    {
+        while (n--) 
+        {
+            *(d++) = *(s++);
+        }
+    }
+    
+    return (int)dest;
+}
 
 int memset(void* ptr, int c, size_t size) 
 {
@@ -9,7 +36,7 @@ int memset(void* ptr, int c, size_t size)
         c_ptr[i] = (char)c;
     }
 
-    return ptr;
+    return 0;
 }
 
 int memcmp(const void *s1, const void *s2, size_t n) 
