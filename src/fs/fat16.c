@@ -88,12 +88,12 @@ int fat16_get_root_directory(struct disk *disk, struct fat_private *fat_private,
 {
     int r = 0;
 
-    struct fat_header *primary_header = &fat_private->header.primary_haeader;
+    struct fat_header *primary_header = &fat_private->header.primary_header;
 
     int root_dir_sector_pos = (primary_header->fat_copies * primary_header->sectors_per_fat) 
         + primary_header->reserved_sectors;
 
-    int root_dir_entries = fat_private->header.primary_haeader.root_dir_entries;
+    int root_dir_entries = fat_private->header.primary_header.root_dir_entries;
     int root_dir_size = root_dir_entries * sizeof(struct fat_directory_item);
     int total_sectors = root_dir_size / disk->sector_size;
 
@@ -166,12 +166,23 @@ void fat16_get_full_relative_filename(struct fat_directory_item* item, char* out
     }
 }
 
+int fat16_cluster_to_sector(struct fat_private* private, int cluster)
+{
+    return private->root_directory.ending_sector_pos +
+        ((cluster - 2) * private->header.primary_header.sectors_per_cluster);
+}
+
 int fat16_get_first_cluster(struct fat_directory_item* item)
 {
     return 0;
 }
 
-int fat16_cluster_to_sector(struct fat_private* fat_private, int cluster)
+int fat16_read_internal(struct disk* disk, int cluster, int x, int dir_size, struct fat_directory_item* item)
+{
+    return 0;
+}
+
+int fat16_free_directory(struct fat_directory* directory)
 {
     return 0;
 }
@@ -181,7 +192,7 @@ struct fat_directory *fat16_load_fat_directory(struct disk* disk, struct fat_dir
     int r = 0;
     r++;
 
-    struct fat_directory* dir = 0;
+    struct fat_directory* directory = 0;
     struct fat_private* fat_private = disk->fs_private;
 
     // If the fat directory item is not a subdirectory we can't load it, so we need to report invalid args.
@@ -191,9 +202,9 @@ struct fat_directory *fat16_load_fat_directory(struct disk* disk, struct fat_dir
         goto out;
     }
 
-    dir = kzalloc(sizeof(struct fat_directory));
+    directory = kzalloc(sizeof(struct fat_directory));
 
-    if(!dir)
+    if(!directory)
     {
         r = -ENOMEM;
         goto out;
@@ -202,12 +213,30 @@ struct fat_directory *fat16_load_fat_directory(struct disk* disk, struct fat_dir
     int cluster = fat16_get_first_cluster(item);
     int cluster_sector = fat16_cluster_to_sector(fat_private, cluster);
     int total_items = fat16_get_total_items_for_directory(disk, cluster_sector);
-    dir->total = total_items;
-    int directory_size = dir->total * sizeof(struct fat_directory_item);
-    dir->item = kzalloc(directory_size);
+    directory->total = total_items;
+    int directory_size = directory->total * sizeof(struct fat_directory_item);
+    directory->item = kzalloc(directory_size);
+
+    if(!directory->item)
+    {
+        r = -ENOMEM;
+        goto out;
+    }
+
+    r = fat16_read_internal(disk, cluster, 0x00, directory_size, directory->item);
+
+    if(r != DEXTER_ALL_OK)
+    {
+        goto out;
+    }
 
 out:
-    return dir;
+    if(r != DEXTER_ALL_OK)
+    {
+        fat16_free_directory(directory);
+    }
+
+    return directory;
 }
 
 struct fat_directory_item *fat16_clone_directory_item(struct fat_directory_item* item, int size)

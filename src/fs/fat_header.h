@@ -38,7 +38,8 @@ struct fat_header
 
 struct fat_h
 {
-    struct fat_header primary_haeader;
+    struct fat_header primary_header;
+    
     union fat_h_e
     {
         struct fat_header_extended extended_header;
