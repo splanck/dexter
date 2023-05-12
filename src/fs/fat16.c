@@ -32,6 +32,16 @@ static void fat16_init_private(struct disk *disk, struct fat_private *private)
     private->directory_stream = disk_streamer_new(disk->id);
 }
 
+static uint32_t fat16_get_first_cluster(struct fat_directory_item* item)
+{
+    return (item->high_16_bits_first_cluster) | (item->low_16_bits_first_cluster);
+}
+
+static int fat16_read_internal(struct disk* disk, int starting_cluster, int offset, int total, void* out)
+{
+    return 0;
+}
+
 int fat16_sector_to_absolute(struct disk *disk, int sector)
 {
     return sector * disk->sector_size;
@@ -170,16 +180,6 @@ int fat16_cluster_to_sector(struct fat_private* private, int cluster)
 {
     return private->root_directory.ending_sector_pos +
         ((cluster - 2) * private->header.primary_header.sectors_per_cluster);
-}
-
-int fat16_get_first_cluster(struct fat_directory_item* item)
-{
-    return 0;
-}
-
-int fat16_read_internal(struct disk* disk, int cluster, int x, int dir_size, struct fat_directory_item* item)
-{
-    return 0;
 }
 
 int fat16_free_directory(struct fat_directory* directory)

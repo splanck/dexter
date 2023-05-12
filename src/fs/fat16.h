@@ -30,7 +30,7 @@ int fat16_get_root_directory(struct disk *disk, struct fat_private *fat_private,
 void fat16_to_proper_string(char** out, const char* in);
 struct fat_item *fat16_get_directory_entry(struct disk* disk, struct path_part *path);
 void fat16_get_full_relative_filename(struct fat_directory_item* item, char* out, int max_len);
-int fat16_get_first_cluster(struct fat_directory_item* item);
+int fat16_cluster_to_sector(struct fat_private* private, int cluster);
 struct fat_directory *fat16_load_fat_directory(struct disk* disk, struct fat_directory_item* item);
 struct fat_directory_item *fat16_clone_directory_item(struct fat_directory_item* item, int size);
 struct fat_item *fat16_new_fat_item_for_directory_item(struct disk* disk, struct fat_directory_item* item);
