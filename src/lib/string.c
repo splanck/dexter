@@ -45,6 +45,23 @@ int istrncmp(const char *s1, const char *s2, size_t n)
     return (f - l);
 }
 
+void strcat(char *dest, char *src) 
+{
+    while (*dest != '\0') 
+    {
+        dest++;
+    }
+    
+    while (*src != '\0') 
+    {
+        *dest = *src;
+        src++;
+        dest++;
+    }
+    
+    *dest = '\0';
+}
+
 char* strcpy(char *destination, char *source) 
 {
     while (*source != '\0') 

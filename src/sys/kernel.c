@@ -36,9 +36,9 @@ void kernel_panic()
     while(1);
 }
 
-void open_file()
+void open_file(const char* filename)
 {
-    int fd = fopen("0:/hello.txt", "r");
+    int fd = fopen(filename, "r");
 
     if(fd)
     {
@@ -83,7 +83,8 @@ void kernel_main()
     enable_interrupts();
     cprint("Interrupts enabled.\n\n", 12);
 
-    open_file();
+    open_file("0:/hello.txt");
+    open_file("0:/hello2.txt");
 
     while(1);
 }
