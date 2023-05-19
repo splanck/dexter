@@ -1,64 +1,89 @@
 #include "../fs/file.h"
-#include "../fs/fat16.h"
-#include "../fs/disk.h"
-#include "../sys/kernel.h"
 #include "../sys/config.h"
-#include "../lib/string.h"
-#include "../mem/heap.h"
-#include "../mem/kheap.h"
-#include "../sys/status.h"
 #include "../mem/memory.h"
+#include "../mem/kheap.h"
+#include "../lib/string.h"
+#include "../fs/disk.h"
+#include "../fs/fat16.h"
+#include "../sys/status.h"
+#include "../sys/kernel.h"
 
 struct filesystem* filesystems[DEXTER_MAX_FILESYSTEMS];
 struct file_descriptor* file_descriptors[DEXTER_MAX_FILE_DESCRIPTORS];
 
-static struct filesystem** fs_get_free_filesystem() 
+static struct filesystem** fs_get_free_filesystem()
 {
-    for(int x = 0; x < DEXTER_MAX_FILESYSTEMS; x++) 
+    int i = 0;
+    for (i = 0; i < DEXTER_MAX_FILESYSTEMS; i++)
     {
-        if(filesystems[x] == 0) 
+        if (filesystems[i] == 0)
         {
-            return &filesystems[x];
+            return &filesystems[i];
         }
     }
 
     return 0;
 }
 
-static void fs_static_load() 
+void fs_insert_filesystem(struct filesystem* filesystem)
+{
+    struct filesystem** fs;
+    fs = fs_get_free_filesystem();
+    if (!fs)
+    {
+        //print("Problem inserting filesystem"); 
+        while(1) {}
+    }
+
+    *fs = filesystem;
+}
+
+static void fs_static_load()
 {
     fs_insert_filesystem(fat16_init());
 }
 
-static int file_new_descriptor(struct file_descriptor** desc_out) 
+void fs_load()
 {
-    int r = -ENOMEM;
-    
-    for(int x = 0; x < DEXTER_MAX_FILE_DESCRIPTORS; x++) 
+    memset(filesystems, 0, sizeof(filesystems));
+    fs_static_load();
+}
+
+void fs_init()
+{
+    memset(file_descriptors, 0, sizeof(file_descriptors));
+    fs_load();
+}
+
+static int file_new_descriptor(struct file_descriptor** desc_out)
+{
+    int res = -ENOMEM;
+    for (int i = 0; i < DEXTER_MAX_FILE_DESCRIPTORS; i++)
     {
-        if(file_descriptors[x]) 
+        if (file_descriptors[i] == 0)
         {
             struct file_descriptor* desc = kzalloc(sizeof(struct file_descriptor));
-            desc->index = x + 1;
-            
-            file_descriptors[x] = desc;
+            // Descriptors start at 1
+            desc->index = i + 1;
+            file_descriptors[i] = desc;
             *desc_out = desc;
+            res = 0;
 
-            r = 0;
             break;
         }
     }
 
-    return r;
+    return res;
 }
 
-static struct file_descriptor* file_get_descriptor(int fd) 
+static struct file_descriptor* file_get_descriptor(int fd)
 {
-    if(fd <= 0 || fd >= DEXTER_MAX_FILE_DESCRIPTORS) 
+    if (fd <= 0 || fd >= DEXTER_MAX_FILE_DESCRIPTORS)
     {
         return 0;
     }
 
+    // Descriptors start at 1
     int index = fd - 1;
 
     return file_descriptors[index];
@@ -68,9 +93,9 @@ struct filesystem* fs_resolve(struct disk* disk)
 {
     struct filesystem* fs = 0;
 
-    for (int i = 0; i < DEXTER_MAX_FILESYSTEMS; i++) 
+    for (int i = 0; i < DEXTER_MAX_FILESYSTEMS; i++)
     {
-        if (filesystems[i] != 0 && filesystems[i]->resolve(disk) == 0) 
+        if (filesystems[i] != 0 && filesystems[i]->resolve(disk) == 0)
         {
             fs = filesystems[i];
             break;
@@ -80,116 +105,93 @@ struct filesystem* fs_resolve(struct disk* disk)
     return fs;
 }
 
-void fs_insert_filesystem(struct filesystem* filesystem) 
-{
-    struct filesystem** fs;
-    fs = fs_get_free_filesystem();
-
-    if(!fs) 
-    {
-        kernel_panic();
-    }
-
-    *fs = filesystem;
-}
-
-void fs_load() 
-{
-    memset(filesystems, 0, sizeof(filesystems));
-    fs_static_load();
-}
-
-void fs_init() 
-{
-    memset(file_descriptors, 0, sizeof(file_descriptors));
-    fs_load();
-}
-
-FILE_MODE file_get_mode_by_str(const char* str)
+FILE_MODE file_get_mode_by_string(const char* str)
 {
     FILE_MODE mode = FILE_MODE_INVALID;
 
-    if(strncmp(str, "r", 1) == 0)
+    if (strncmp(str, "r", 1) == 0)
     {
         mode = FILE_MODE_READ;
     }
-    else if(strncmp(str, "", 1) == 0) 
+    else if(strncmp(str, "w", 1) == 0)
     {
         mode = FILE_MODE_WRITE;
     }
-    else if(strncmp(str, "a", 1) == 0) 
+    else if(strncmp(str, "a", 1) == 0)
     {
         mode = FILE_MODE_APPEND;
     }
-
     return mode;
 }
 
-int fopen(const char* filename, const char* mode_str) 
+int fopen(const char* filename, const char* mode_str)
 {
-    int r = 0;
+    int res = 0;
     struct path_root* root_path = pathparser_parse(filename, NULL);
 
-    if(!root_path) 
+    if (!root_path)
     {
-        r = -EINVARG;
+        res = -EINVARG;
         goto out;
     }
 
-    if(!root_path->first)
+    // We cannot have just a root path 0:/ 0:/test.txt
+    if (!root_path->first)
     {
-        r = -EINVARG;
+        res = -EINVARG;
         goto out;
     }
 
+    // Ensure the disk we are reading from exists
     struct disk* disk = disk_get(root_path->drive_no);
 
-    if(!disk)
+    if (!disk)
     {
-        r = -EIO;
+        res = -EIO;
         goto out;
     }
 
-    if(!disk->filesystem)
+    if (!disk->filesystem)
     {
-        r = -EIO;
+        res = -EIO;
         goto out;
     }
 
-    FILE_MODE mode = file_get_mode_by_str(mode_str);
+    FILE_MODE mode = file_get_mode_by_string(mode_str);
 
-    if(mode == FILE_MODE_INVALID)
+    if (mode == FILE_MODE_INVALID)
     {
-        r = -EINVARG;
+        res = -EINVARG;
         goto out;
     }
 
     void* descriptor_private_data = disk->filesystem->open(disk, root_path->first, mode);
 
-    if(ISERR(descriptor_private_data))
+    if (ISERR(descriptor_private_data))
     {
-        r = ERROR_I(descriptor_private_data);
+        res = ERROR_I(descriptor_private_data);
         goto out;
     }
 
     struct file_descriptor* desc = 0;
-    r = file_new_descriptor(&desc);
+    res = file_new_descriptor(&desc);
 
-    if(r < 0)
+    if (res < 0)
     {
         goto out;
     }
-
+    
     desc->filesystem = disk->filesystem;
-    desc->disk = disk;
     desc->private = descriptor_private_data;
-    r = desc->index;
+    desc->disk = disk;
 
+    res = desc->index;
 out:
-    if(r < 0)
+    // fopen shouldnt return negative values
+    if (res < 0)
     {
-        return 0;
+        res = 0;
     }
 
-    return r;
+    return res;
 }

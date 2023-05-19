@@ -4,6 +4,9 @@
 #include "../lib/console.h"
 #include "../sys/config.h"
 
+struct heap kernel_heap;
+struct heap_table kernel_heap_table;
+
 void kheap_init() 
 {
     int total_table_entries = DEXTER_HEAP_SIZE_BYTES / DEXTER_HEAP_BLOCK_SIZE;

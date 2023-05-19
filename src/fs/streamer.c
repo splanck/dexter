@@ -1,61 +1,60 @@
 #include "../fs/streamer.h"
-#include "../mem/heap.h"
 #include "../mem/kheap.h"
 #include "../sys/config.h"
 
-struct disk_stream* disk_streamer_new(int disk_id) 
+struct disk_stream* diskstreamer_new(int disk_id)
 {
     struct disk* disk = disk_get(disk_id);
-    
-    if(!disk) 
+
+    if (!disk)
     {
         return 0;
     }
 
     struct disk_stream* streamer = kzalloc(sizeof(struct disk_stream));
-    streamer->disk = disk;
     streamer->pos = 0;
-
+    streamer->disk = disk;
     return streamer;
 }
 
-int disk_streamer_seek(struct disk_stream* stream, int pos) 
+int diskstreamer_seek(struct disk_stream* stream, int pos)
 {
     stream->pos = pos;
     return 0;
 }
 
-int disk_streamer_close(struct disk_stream* stream) 
+int diskstreamer_read(struct disk_stream* stream, void* out, int total)
 {
-    kfree(stream);
-    return 0;
-}
-
-int disk_streamer_read(struct disk_stream* stream, void* out, int total) 
-{
-    int sector = stream->pos / DEXTER_SECTOR_SIZE; 
+    int sector = stream->pos / DEXTER_SECTOR_SIZE;
     int offset = stream->pos % DEXTER_SECTOR_SIZE;
-    int total_to_read = total > DEXTER_SECTOR_SIZE ? DEXTER_SECTOR_SIZE : total, res = 0;
     char buf[DEXTER_SECTOR_SIZE];
 
-    res = disk_read_block(stream->disk, sector, 1, buf);
-    
-    if(res < 0) 
+    int res = disk_read_block(stream->disk, sector, 1, buf);
+
+    if (res < 0)
     {
         goto out;
     }
 
-    for(int x = 0; x < total; x++) 
+    int total_to_read = total > DEXTER_SECTOR_SIZE ? DEXTER_SECTOR_SIZE : total;
+
+    for (int i = 0; i < total_to_read; i++)
     {
-        *(char*)out++ = buf[offset + x];
+        *(char*)out++ = buf[offset+i];
     }
 
+    // Adjust the stream
     stream->pos += total_to_read;
     
-    if(total > DEXTER_SECTOR_SIZE)
+    if (total > DEXTER_SECTOR_SIZE)
     {
-        res = disk_streamer_read(stream, out, total - DEXTER_SECTOR_SIZE);
+        res = diskstreamer_read(stream, out, total-DEXTER_SECTOR_SIZE);
     }
 out:
     return res;
+}
+
+void diskstreamer_close(struct disk_stream* stream)
+{
+    kfree(stream);
 }

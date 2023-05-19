@@ -1,5 +1,5 @@
 C_COMPILER = i686-elf-gcc
-FILES = ./build/kernel.asm.o ./build/kernel.o ./build/idt.asm.o ./build/idt.o ./build/memory.o ./build/io.asm.o ./build/paging.asm.o ./build/console.o ./build/string.o ./build/heap.o ./build/kheap.o ./build/paging.o ./build/disk.o ./build/pathparser.o ./build/streamer.o ./build/file.o ./build/fat16.o ./build/utility.o
+FILES = ./build/kernel.asm.o ./build/kernel.o ./build/idt.asm.o ./build/idt.o ./build/memory.o ./build/io.asm.o ./build/paging.asm.o ./build/console.o ./build/string.o ./build/heap.o ./build/kheap.o ./build/paging.o ./build/disk.o ./build/pparser.o ./build/streamer.o ./build/file.o ./build/fat16.o ./build/utility.o
 INCLUDES = -I./src
 FLAGS = -g -ffreestanding -falign-jumps -falign-functions -falign-labels -falign-loops -fstrength-reduce -fomit-frame-pointer -finline-functions -Wno-unused-function -fno-builtin -Werror -Wno-unused-label -Wno-cpp -Wno-unused-parameter -nostdlib -nostartfiles -nodefaultlibs -Wall -O0 -Iinc
 
@@ -10,7 +10,8 @@ all: ./bin/boot.bin ./bin/kernel.bin
 	dd if=/dev/zero bs=1048576 count=5 >> ./bin/os.bin
 	sudo mkdir -p /mnt/d
 	sudo mount -t vfat ./bin/os.bin /mnt/d
-	sudo cp ./LICENSE /mnt/d
+	sudo cp ./hello.txt /mnt/d
+#	sudo cp ./LICENSE /mnt/d
 	sudo umount /mnt/d
 	cp ./bin/os.bin ./images/dexter.img
 
@@ -51,8 +52,8 @@ all: ./bin/boot.bin ./bin/kernel.bin
 ./build/streamer.o: ./src/fs/streamer.c
 	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/fs/streamer.c -o ./build/streamer.o
 
-./build/pathparser.o: ./src/fs/pathparser.c
-	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/fs/pathparser.c -o ./build/pathparser.o
+./build/pparser.o: ./src/fs/pparser.c
+	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/fs/pparser.c -o ./build/pparser.o
 
 ./build/disk.o: ./src/fs/disk.c
 	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/fs/disk.c -o ./build/disk.o

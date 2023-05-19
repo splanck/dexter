@@ -36,6 +36,20 @@ void kernel_panic()
     while(1);
 }
 
+void open_file()
+{
+    int fd = fopen("0:/hello.txt", "r");
+
+    if(fd)
+    {
+        cprint("Opened file hello.txt.\n", 10);
+    }
+    else
+    {
+        cprint("Failed to open hello.txt\n", 10);
+    }
+}
+
 void kernel_main() 
 {
     // Initialize terminal for text mode
@@ -67,13 +81,9 @@ void kernel_main()
     cprint("Interrupt descriptor table initialized.\n", 13);
 
     enable_interrupts();
-    cprint("Interrupts enabled.\n", 12);
+    cprint("Interrupts enabled.\n\n", 12);
 
-    char buf[512];
-    disk_read_sectors(0, 1, buf);
-
-    update_cursor(15,15);
-    //print("Hello");
+    open_file();
 
     while(1);
 }

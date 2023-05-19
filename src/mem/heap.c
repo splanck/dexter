@@ -168,7 +168,7 @@ void* heap_malloc_blocks(struct heap* heap, uint32_t total_blocks)
         goto out;
     }
 
-    address = heap_block_to_address(heap, total_blocks);
+    address = heap_block_to_address(heap, start_block);
     heap_mark_blocks_taken(heap, start_block, total_blocks);
 
 out:
