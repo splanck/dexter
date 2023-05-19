@@ -151,6 +151,24 @@ out:
     return r;
 }
 
+int fseek(int fd, int offset, FILE_SEEK_MODE whence)
+{
+    int r = 0;
+
+    struct file_descriptor* desc = file_get_descriptor(fd);
+
+    if(!fd)
+    {
+        r = -EIO;
+        goto out;
+    }
+
+    r = desc->filesystem->seek(desc->private, offset, whence);
+
+out:
+    return r;
+}
+
 int fopen(const char* filename, const char* mode_str)
 {
     int r = 0;
