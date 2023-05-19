@@ -42,12 +42,21 @@ void open_file(const char* filename)
 
     if(fd)
     {
-        cprint("Opened file hello.txt.\n", 10);
+        cprint(filename, 10);
+        cprint(" file opened successfully.\n", 10);
     }
     else
     {
-        cprint("Failed to open hello.txt\n", 10);
+        cprint(filename, 10);
+        cprint(" file failed to open.\n", 10);
     }
+
+    char buf[14];
+    
+    fread(buf, 13, 1, fd);
+    buf[13] = 0x00;
+
+    print(buf);
 }
 
 void kernel_main() 
@@ -84,7 +93,7 @@ void kernel_main()
     cprint("Interrupts enabled.\n\n", 12);
 
     open_file("0:/hello.txt");
-    open_file("0:/hello2.txt");
+    //open_file("0:/hello2.txt");
 
     while(1);
 }
