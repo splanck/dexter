@@ -14,6 +14,7 @@ struct file_descriptor* file_descriptors[DEXTER_MAX_FILE_DESCRIPTORS];
 static struct filesystem** fs_get_free_filesystem()
 {
     int i = 0;
+
     for (i = 0; i < DEXTER_MAX_FILESYSTEMS; i++)
     {
         if (filesystems[i] == 0)
@@ -29,6 +30,7 @@ void fs_insert_filesystem(struct filesystem* filesystem)
 {
     struct filesystem** fs;
     fs = fs_get_free_filesystem();
+
     if (!fs)
     {
         //print("Problem inserting filesystem"); 
@@ -57,7 +59,8 @@ void fs_init()
 
 static int file_new_descriptor(struct file_descriptor** desc_out)
 {
-    int res = -ENOMEM;
+    int r = -ENOMEM;
+
     for (int i = 0; i < DEXTER_MAX_FILE_DESCRIPTORS; i++)
     {
         if (file_descriptors[i] == 0)
@@ -67,13 +70,13 @@ static int file_new_descriptor(struct file_descriptor** desc_out)
             desc->index = i + 1;
             file_descriptors[i] = desc;
             *desc_out = desc;
-            res = 0;
+            r = 0;
 
             break;
         }
     }
 
-    return res;
+    return r;
 }
 
 static struct file_descriptor* file_get_descriptor(int fd)
@@ -121,24 +124,48 @@ FILE_MODE file_get_mode_by_string(const char* str)
     {
         mode = FILE_MODE_APPEND;
     }
+
     return mode;
+}
+
+int fread(void* ptr, uint32_t size, uint32_t nmemb, int fd)
+{
+    int r = 0;
+
+    if(size == 0 || nmemb == 0 || fd < 1)
+    {
+        r = -EINVARG;
+        goto out;
+    }
+
+    struct file_descriptor* desc = file_get_descriptor(fd);
+
+    if(!desc)
+    {
+        r = -EINVARG;
+        goto out;
+    }
+
+    r = desc->filesystem->read(desc->disk, desc->private, size, nmemb, (char*)ptr);
+out:
+    return r;
 }
 
 int fopen(const char* filename, const char* mode_str)
 {
-    int res = 0;
+    int r = 0;
     struct path_root* root_path = pathparser_parse(filename, NULL);
 
     if (!root_path)
     {
-        res = -EINVARG;
+        r = -EINVARG;
         goto out;
     }
 
     // We cannot have just a root path 0:/ 0:/test.txt
     if (!root_path->first)
     {
-        res = -EINVARG;
+        r = -EINVARG;
         goto out;
     }
 
@@ -147,13 +174,13 @@ int fopen(const char* filename, const char* mode_str)
 
     if (!disk)
     {
-        res = -EIO;
+        r = -EIO;
         goto out;
     }
 
     if (!disk->filesystem)
     {
-        res = -EIO;
+        r = -EIO;
         goto out;
     }
 
@@ -161,7 +188,7 @@ int fopen(const char* filename, const char* mode_str)
 
     if (mode == FILE_MODE_INVALID)
     {
-        res = -EINVARG;
+        r = -EINVARG;
         goto out;
     }
 
@@ -169,14 +196,14 @@ int fopen(const char* filename, const char* mode_str)
 
     if (ISERR(descriptor_private_data))
     {
-        res = ERROR_I(descriptor_private_data);
+        r = ERROR_I(descriptor_private_data);
         goto out;
     }
 
     struct file_descriptor* desc = 0;
-    res = file_new_descriptor(&desc);
+    r = file_new_descriptor(&desc);
 
-    if (res < 0)
+    if (r < 0)
     {
         goto out;
     }
@@ -185,13 +212,14 @@ int fopen(const char* filename, const char* mode_str)
     desc->private = descriptor_private_data;
     desc->disk = disk;
 
-    res = desc->index;
+    r = desc->index;
 out:
     // fopen shouldnt return negative values
-    if (res < 0)
+    if (r < 0)
     {
-        res = 0;
+        r = 0;
     }
 
-    return res;
+    return r;
 }
+
