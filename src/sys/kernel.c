@@ -17,6 +17,9 @@ int memory_allocation_test()
 
     if(ptr == ptr2) ;
 
+    kfree(ptr);
+    kfree(ptr2);
+
     return 0;
 }
 
@@ -28,12 +31,6 @@ int start_paging()
     enable_paging();
 
     return 0;
-}
-
-void kernel_panic() 
-{
-    print("\nOops. Something just went terribly wrong. PANIC!\n");
-    while(1);
 }
 
 void panic(const char* msg)
@@ -89,32 +86,42 @@ void kernel_main()
     
     // Initialize heap
     kheap_init();
+#ifdef VERBOSE
     cprint("Kernel memory heap initialized.\n", 13);
-
+#endif
+#ifdef DEBUG
     memory_allocation_test();
     cprint("Memory allocation test completed.\n", 12);
-
+#endif
     // Inititalize file systems
     fs_init();
+#ifdef VERBOSE
     cprint("File systems initialized.\n", 11);
-    
+#endif
     // Setup and enable memory paging
     start_paging();
+#ifdef VERBOSE
     cprint("Paging enabled.\n", 10);
-
+#endif
     // Setup the disk
     disk_search_and_init();
+#ifdef VERBOSE
     cprint("Primary disk initialized.\n", 14);
-
+#endif
     // Initialize interrupt descriptor table
     idt_init();
+#ifdef VERBOSE
     cprint("Interrupt descriptor table initialized.\n", 13);
-
+#endif
     enable_interrupts();
+#ifdef VERBOSE
     cprint("Interrupts enabled.\n\n", 12);
+#endif
 
+#ifdef DEBUG
     open_file("0:/hello.txt");
-    //open_file("0:/hello2.txt");
+    open_file("0:/license.txt");
+#endif
 
     while(1);
 }

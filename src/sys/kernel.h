@@ -1,11 +1,13 @@
 #ifndef KERNEL_H
 #define KERNEL_H
 
+#define DEBUG
+#define VERBOSE
+
 #include <stdint.h>
 #include <stddef.h>
 
 void kernel_main();
-void kernel_panic();
 void panic(const char* msg);
 
 #define ERROR(value) (void*)value
