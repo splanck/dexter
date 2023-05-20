@@ -36,6 +36,14 @@ void kernel_panic()
     while(1);
 }
 
+void panic(const char* msg)
+{
+    print("\n");
+    print(msg);
+
+    while(1);
+}
+
 void open_file(const char* filename)
 {
     int fd = fopen(filename, "r");
@@ -66,7 +74,7 @@ void open_file(const char* filename)
     fstat(fd, &s);
 
     fclose(fd);
-    
+
     print("\nFile closed.\n");
 out:
     return;
