@@ -65,6 +65,9 @@ void open_file(const char* filename)
     struct file_stat s;
     fstat(fd, &s);
 
+    fclose(fd);
+    
+    print("\nFile closed.\n");
 out:
     return;
 }

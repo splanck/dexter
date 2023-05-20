@@ -93,6 +93,12 @@ static struct file_descriptor* file_get_descriptor(int fd)
     return file_descriptors[index];
 }
 
+static void file_free_descriptor(struct file_descriptor* desc)
+{
+    file_descriptors[desc->index - 1] = 0x00;
+    kfree(desc);
+}
+
 struct filesystem* fs_resolve(struct disk* disk)
 {
     struct filesystem* fs = 0;
@@ -148,6 +154,7 @@ int fread(void* ptr, uint32_t size, uint32_t nmemb, int fd)
     }
 
     r = desc->filesystem->read(desc->disk, desc->private, size, nmemb, (char*)ptr);
+
 out:
     return r;
 }
@@ -165,6 +172,12 @@ int fclose(int fd)
     }
 
     r = desc->filesystem->close(desc->private);
+
+    if(r == DEXTER_ALL_OK)
+    {
+        file_free_descriptor(desc);
+    }
+
 out:
     return r;
 }
