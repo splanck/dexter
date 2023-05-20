@@ -1,5 +1,5 @@
 C_COMPILER = i686-elf-gcc
-FILES = ./build/kernel.asm.o ./build/kernel.o ./build/idt.asm.o ./build/idt.o ./build/memory.o ./build/io.asm.o ./build/paging.asm.o ./build/console.o ./build/string.o ./build/heap.o ./build/kheap.o ./build/paging.o ./build/disk.o ./build/pparser.o ./build/streamer.o ./build/file.o ./build/fat16.o ./build/utility.o ./build/gdt.o
+FILES = ./build/kernel.asm.o ./build/kernel.o ./build/idt.asm.o ./build/idt.o ./build/memory.o ./build/io.asm.o ./build/paging.asm.o ./build/console.o ./build/string.o ./build/heap.o ./build/kheap.o ./build/paging.o ./build/disk.o ./build/pparser.o ./build/streamer.o ./build/file.o ./build/fat16.o ./build/utility.o ./build/gdt.o ./build/gdt.asm.o
 INCLUDES = -I./src
 FLAGS = -g -ffreestanding -falign-jumps -falign-functions -falign-labels -falign-loops -fstrength-reduce -fomit-frame-pointer -finline-functions -Wno-unused-function -fno-builtin -Werror -Wno-unused-label -Wno-cpp -Wno-unused-parameter -nostdlib -nostartfiles -nodefaultlibs -Wall -O0 -Iinc
 
@@ -24,6 +24,9 @@ all: ./bin/boot.bin ./bin/kernel.bin
 
 ./build/kernel.asm.o: ./src/sys/kernel.asm
 	nasm -f elf -g ./src/sys/kernel.asm -o ./build/kernel.asm.o
+
+./build/gdt.asm.o: ./src/sys/gdt.asm
+	nasm -f elf -g ./src/sys/gdt.asm -o ./build/gdt.asm.o
 
 ./build/idt.asm.o: ./src/sys/idt.asm
 	nasm -f elf -g ./src/sys/idt.asm -o ./build/idt.asm.o
