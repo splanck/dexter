@@ -1,13 +1,12 @@
-#include "../fs/file.h"
-#include "../sys/config.h"
-#include "../mem/memory.h"
-#include "../mem/kheap.h"
-#include "../lib/string.h"
-#include "../fs/disk.h"
-#include "../fs/fat16.h"
-#include "../sys/status.h"
-#include "../sys/kernel.h"
-#include "file.h"
+#include "fs/file.h"
+#include "fs/disk.h"
+#include "fs/fat16.h"
+#include "sys/config.h"
+#include "sys/status.h"
+#include "sys/kernel.h"
+#include "mem/memory.h"
+#include "mem/kheap.h"
+#include "lib/string.h"
 
 struct filesystem* filesystems[DEXTER_MAX_FILESYSTEMS];
 struct file_descriptor* file_descriptors[DEXTER_MAX_FILE_DESCRIPTORS];

@@ -1,7 +1,7 @@
 #ifndef DISKSTREAMER_H
 #define DISKSTREAMER_H
 
-#include "../fs/disk.h"
+#include "fs/disk.h"
 
 struct disk_stream
 {

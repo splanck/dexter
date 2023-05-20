@@ -1,10 +1,10 @@
-#include "../fs/pparser.h"
-#include "../sys/kernel.h"
-#include "../lib/string.h"
-#include "../mem/kheap.h"
-#include "../mem/memory.h"
-#include "../sys/status.h"
-#include "../sys/config.h"
+#include "fs/pparser.h"
+#include "sys/kernel.h"
+#include "sys/status.h"
+#include "sys/config.h"
+#include "mem/kheap.h"
+#include "mem/memory.h"
+#include "lib/string.h"
 
 static int pathparser_path_valid_format(const char* filename)
 {

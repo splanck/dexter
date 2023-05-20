@@ -1,7 +1,7 @@
-#include "../mem/heap.h"
-#include "../mem/memory.h"
-#include "../sys/status.h"
-#include "../sys/config.h"
+#include "mem/heap.h"
+#include "mem/memory.h"
+#include "sys/status.h"
+#include "sys/config.h"
 
 static int heap_validate_table(void* ptr, void* end, struct heap_table* table) 
 {

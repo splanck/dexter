@@ -1,9 +1,9 @@
-#include "../sys/idt.h"
-#include "../sys/config.h"
-#include "../sys/kernel.h"
-#include "../mem/memory.h"
-#include "../sys/io.h"
-#include "../lib/console.h"
+#include "sys/idt.h"
+#include "sys/config.h"
+#include "sys/kernel.h"
+#include "sys/io.h"
+#include "mem/memory.h"
+#include "lib/console.h"
 
 struct idt_desc idt_descriptors[DEXTER_TOTAL_INTERUPTS];
 struct idtr_desc idtr_descriptor;

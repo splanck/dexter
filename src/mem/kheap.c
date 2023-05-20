@@ -1,8 +1,9 @@
-#include "../mem/heap.h"
-#include "../mem/kheap.h"
-#include "../mem/memory.h"
-#include "../lib/console.h"
-#include "../sys/config.h"
+#include "mem/heap.h"
+#include "mem/kheap.h"
+#include "mem/memory.h"
+#include "lib/console.h"
+#include "sys/kernel.h"
+#include "sys/config.h"
 
 struct heap kernel_heap;
 struct heap_table kernel_heap_table;
@@ -21,7 +22,7 @@ void kheap_init()
 
     if(r < 0)
     {
-        cprint("Heap creation failed.\n", 12);
+        panic("\nkheap_init: Heap creation failed.\n");
     }
 }
 

@@ -1,6 +1,6 @@
-#include "../fs/streamer.h"
-#include "../mem/kheap.h"
-#include "../sys/config.h"
+#include "fs/streamer.h"
+#include "mem/kheap.h"
+#include "sys/config.h"
 
 struct disk_stream* diskstreamer_new(int disk_id)
 {

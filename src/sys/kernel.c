@@ -1,24 +1,29 @@
-#include "../sys/kernel.h"
-#include "../sys/idt.h"
-#include "../sys/io.h"
-#include "../sys/gdt.h"
-#include "../sys/config.h"
-#include "../mem/heap.h"
-#include "../mem/kheap.h"
-#include "../mem/paging.h"
-#include "../mem/memory.h"
-#include "../fs/disk.h"
-#include "../fs/file.h"
-#include "../lib/console.h"
+#include "sys/kernel.h"
+#include "sys/idt.h"
+#include "sys/io.h"
+#include "sys/gdt.h"
+#include "sys/config.h"
+#include "sys/tss.h"
+#include "mem/heap.h"
+#include "mem/kheap.h"
+#include "mem/paging.h"
+#include "mem/memory.h"
+#include "fs/disk.h"
+#include "fs/file.h"
+#include "lib/console.h"
 
 static struct paging_4gb_chunk* kernel_chunk = 0;
+struct tss tss;
 struct gdt gdt_real[DEXTER_TOTAL_GDT_SEGMENTS];
 
 struct gdt_structured gdt_structured[DEXTER_TOTAL_GDT_SEGMENTS] = 
 {
-    {.base = 0x00, .limit = 0x00, .type = 0x00},            // NULL segment
-    {.base = 0x00, .limit = 0xFFFFFFFF, .type = 0x9a},      // Code segment
-    {.base = 0x00, .limit = 0xFFFFFFFF, .type = 0x92}       // Data segment
+    {.base = 0x00, .limit = 0x00, .type = 0x00},                    // NULL segment
+    {.base = 0x00, .limit = 0xFFFFFFFF, .type = 0x9a},              // Kernel code segment
+    {.base = 0x00, .limit = 0xFFFFFFFF, .type = 0x92},              // Kernel data segment
+    {.base = 0x00, .limit = 0xFFFFFFFF, .type = 0xF8},              // User code segment
+    {.base = 0x00, .limit = 0xFFFFFFFF, .type = 0xF2},              // User data segment
+    {.base = (uint32_t)&tss, .limit = sizeof(tss), .type = 0xE9}    // Task switch segment
 };
 
 // Test code for memory allocation uusing kmalloc and kfree.
@@ -73,25 +78,32 @@ out:
 }
 
 // Enables memory paging using the enable_paging() function from paging.c
-int start_paging() 
+void start_paging() 
 {
     kernel_chunk = paging_new_4gb(PAGING_IS_WRITEABLE | PAGING_IS_PRESENT | PAGING_ACCESS_FROM_ALL);
     paging_switch(paging_4gb_chunk_get_directory(kernel_chunk));
     
     enable_paging();
-
-    return 0;
 }
 
 // Load the global descriptor table for protected mode.
-int setup_gdt()
+void setup_gdt()
 {
     memset(gdt_real, 0x00, sizeof(gdt_real));
 
     gdt_structured_to_gdt(gdt_real, gdt_structured, DEXTER_TOTAL_GDT_SEGMENTS);
     gdt_load(gdt_real, sizeof(gdt_real));
+}
 
-    return 0;
+// Load the task switching segment into the global descriptor table
+void setup_tss()
+{
+    memset(&tss, 0x00, sizeof(tss));
+
+    tss.esp0 = 0x600000;
+    tss.ss0 = KERNEL_DATA_SELECTOR;
+
+    tss_load(0x28);
 }
 
 void panic(const char* msg)
@@ -112,7 +124,7 @@ void kernel_main()
     // Load global descriptor table
     setup_gdt();
 #ifdef VERBOSE
-    cprint("Global descriptor table loaded.", 15);
+    cprint("Global descriptor table loaded.\n", 15);
 #endif
 
     // Initialize heap
@@ -120,6 +132,7 @@ void kernel_main()
 #ifdef VERBOSE
     cprint("Kernel memory heap initialized.\n", 13);
 #endif
+
 #ifdef DEBUG
     memory_allocation_test();
     cprint("Memory allocation test completed.\n", 12);
@@ -148,6 +161,14 @@ void kernel_main()
 #ifdef VERBOSE
     cprint("Interrupt descriptor table initialized.\n", 13);
 #endif
+
+    // Setup the task switching segment
+    setup_tss();
+#ifdef VERBOSE
+    cprint("Task switching segment loaded.\n", 10);
+#endif
+
+    // Enable interrupts
     enable_interrupts();
 #ifdef VERBOSE
     cprint("Interrupts enabled.\n\n", 12);

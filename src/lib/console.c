@@ -1,7 +1,7 @@
-#include "../lib/console.h"
-#include "../sys/io.h"
-#include "../sys/kernel.h"
-#include "../lib/string.h"
+#include "lib/console.h"
+#include "sys/io.h"
+#include "sys/kernel.h"
+#include "lib/string.h"
 
 uint16_t* video_mem = 0;
 uint16_t terminal_row = 0;

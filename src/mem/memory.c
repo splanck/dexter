@@ -1,5 +1,5 @@
-#include "../mem/memory.h"
-#include "../mem/heap.h"
+#include "mem/memory.h"
+#include "mem/heap.h"
 
 int memmove(void *dest, const void *src, size_t n) 
 {

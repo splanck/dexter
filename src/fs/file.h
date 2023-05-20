@@ -1,7 +1,7 @@
 #ifndef FILE_H
 #define FILE_H
 
-#include "../fs/pparser.h"
+#include "fs/pparser.h"
 #include <stdint.h>
 
 struct disk;

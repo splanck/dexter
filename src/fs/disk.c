@@ -1,8 +1,8 @@
-#include "../fs/disk.h"
-#include "../sys/io.h"
-#include "../sys/config.h"
-#include "../sys/status.h"
-#include "../mem/memory.h"
+#include "fs/disk.h"
+#include "sys/io.h"
+#include "sys/config.h"
+#include "sys/status.h"
+#include "mem/memory.h"
 
 struct disk disk;
 

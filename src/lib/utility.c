@@ -1,4 +1,4 @@
-#include "../lib/utility.h"
+#include "lib/utility.h"
 
 static unsigned int saved_seed = 0;
 

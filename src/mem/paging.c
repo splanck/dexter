@@ -1,7 +1,7 @@
-#include "../mem/paging.h"
-#include "../mem/heap.h"
-#include "../mem/kheap.h"
-#include "../sys/status.h"
+#include "mem/paging.h"
+#include "mem/heap.h"
+#include "mem/kheap.h"
+#include "sys/status.h"
 
 static uint32_t* current_directory = 0;
 

@@ -1,12 +1,12 @@
-#include "../fs/fat16.h"
-#include "../lib/string.h"
-#include "../fs/disk.h"
-#include "../fs/streamer.h"
-#include "../mem/kheap.h"
-#include "../mem/memory.h"
-#include "../sys/status.h"
-#include "../sys/kernel.h"
-#include "../sys/config.h"
+#include "fs/fat16.h"
+#include "fs/disk.h"
+#include "fs/streamer.h"
+#include "mem/kheap.h"
+#include "mem/memory.h"
+#include "sys/status.h"
+#include "sys/kernel.h"
+#include "sys/config.h"
+#include "lib/string.h"
 #include <stdint.h>
 
 #define DEXTER_FAT16_SIGNATURE 0x29

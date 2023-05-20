@@ -1,5 +1,5 @@
-#include "../sys/gdt.h"
-#include "../sys/kernel.h"
+#include "sys/gdt.h"
+#include "sys/kernel.h"
 
 void encodeGdtEntry(uint8_t* target, struct gdt_structured source)
 {
