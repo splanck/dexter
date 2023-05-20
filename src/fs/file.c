@@ -7,6 +7,7 @@
 #include "../fs/fat16.h"
 #include "../sys/status.h"
 #include "../sys/kernel.h"
+#include "file.h"
 
 struct filesystem* filesystems[DEXTER_MAX_FILESYSTEMS];
 struct file_descriptor* file_descriptors[DEXTER_MAX_FILE_DESCRIPTORS];
@@ -57,7 +58,7 @@ void fs_init()
     fs_load();
 }
 
-static int file_new_descriptor(struct file_descriptor** desc_out)
+static int file_new_descriptor(struct file_descriptor **desc_out)
 {
     int r = -ENOMEM;
 
@@ -147,6 +148,40 @@ int fread(void* ptr, uint32_t size, uint32_t nmemb, int fd)
     }
 
     r = desc->filesystem->read(desc->disk, desc->private, size, nmemb, (char*)ptr);
+out:
+    return r;
+}
+
+int fclose(int fd)
+{
+    int r = 0;
+
+    struct file_descriptor* desc = file_get_descriptor(fd);
+
+    if(!desc)
+    {
+        r = -EIO;
+        goto out;
+    }
+
+    r = desc->filesystem->close(desc->private);
+out:
+    return r;
+}
+
+int fstat(int fd, struct file_stat* stat)
+{
+    int r = 0;
+
+    struct file_descriptor* desc = file_get_descriptor(fd);
+
+    if(!desc)
+    {
+        r = -EIO;
+        goto out;
+    }
+
+    r = desc->filesystem->stat(desc->disk, desc->private, stat);
 out:
     return r;
 }

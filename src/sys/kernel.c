@@ -49,6 +49,8 @@ void open_file(const char* filename)
     {
         cprint(filename, 10);
         cprint(" file failed to open.\n", 10);
+
+        goto out;
     }
 
     char buf[14];
@@ -59,6 +61,12 @@ void open_file(const char* filename)
     buf[13] = 0x00;
 
     print(buf);
+
+    struct file_stat s;
+    fstat(fd, &s);
+
+out:
+    return;
 }
 
 void kernel_main() 
