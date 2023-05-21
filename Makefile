@@ -1,5 +1,5 @@
 C_COMPILER = i686-elf-gcc
-FILES = ./build/kernel.asm.o ./build/kernel.o ./build/idt.asm.o ./build/idt.o ./build/memory.o ./build/io.asm.o ./build/paging.asm.o ./build/console.o ./build/string.o ./build/heap.o ./build/kheap.o ./build/paging.o ./build/disk.o ./build/pparser.o ./build/streamer.o ./build/file.o ./build/fat16.o ./build/utility.o ./build/gdt.o ./build/gdt.asm.o ./build/tss.asm.o ./build/task.o
+FILES = ./build/kernel.asm.o ./build/kernel.o ./build/idt.asm.o ./build/idt.o ./build/memory.o ./build/io.asm.o ./build/paging.asm.o ./build/console.o ./build/string.o ./build/heap.o ./build/kheap.o ./build/paging.o ./build/disk.o ./build/pparser.o ./build/streamer.o ./build/file.o ./build/fat16.o ./build/utility.o ./build/gdt.o ./build/gdt.asm.o ./build/tss.asm.o ./build/task.o ./build/process.o
 INCLUDES = -I./src
 FLAGS = -g -ffreestanding -falign-jumps -falign-functions -falign-labels -falign-loops -fstrength-reduce -fomit-frame-pointer -finline-functions -Wno-unused-function -fno-builtin -Werror -Wno-unused-label -Wno-cpp -Wno-unused-parameter -nostdlib -nostartfiles -nodefaultlibs -Wall -O0 -Iinc
 
@@ -87,6 +87,9 @@ all: ./bin/boot.bin ./bin/kernel.bin
 
 ./build/task.o: ./src/proc/task.c
 	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/proc/task.c -o ./build/task.o
+
+./build/process.o: ./src/proc/process.c
+	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/proc/process.c -o ./build/process.o
 
 run:
 	qemu-system-i386 -hda ./images/dexter.img

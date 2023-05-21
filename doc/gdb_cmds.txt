@@ -6,3 +6,7 @@ c = continue
 s = step
 n = step and do not enter function
 f = execute until function is finished
+l = List current code context
+info locals = show all local variables in scope
+
+
