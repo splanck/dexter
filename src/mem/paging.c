@@ -16,6 +16,20 @@ void paging_switch(uint32_t* directory)
     current_directory = directory;
 }
 
+void paging_free_4gb(struct paging_4gb_chunk* chunk)
+{
+    for(int i = 0; i < 1024; i++)
+    {
+        uint32_t entry = chunk->directory_entry[i];
+        uint32_t* table = (uint32_t*)(entry & 0xFFFFF000);
+
+        kfree(table);
+    }
+
+    kfree(chunk->directory_entry);
+    kfree(chunk);
+}
+
 struct paging_4gb_chunk* paging_new_4gb(uint8_t flags) 
 {
     uint32_t* directory = kzalloc(sizeof(uint32_t) * PAGING_TOTAL_ENTRIES_PER_TABLE);

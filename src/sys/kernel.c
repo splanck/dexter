@@ -3,7 +3,7 @@
 #include "sys/io.h"
 #include "sys/gdt.h"
 #include "sys/config.h"
-#include "sys/tss.h"
+#include "proc/tss.h"
 #include "mem/heap.h"
 #include "mem/kheap.h"
 #include "mem/paging.h"

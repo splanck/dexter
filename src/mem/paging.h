@@ -27,5 +27,6 @@ void paging_switch(uint32_t* directory);
 bool paging_is_aligned(void* addr);
 int paging_set(uint32_t* directory, void* virt, uint32_t val);
 int paging_get_indexes(void* virtual_address, uint32_t* dir_ix_out, uint32_t* tbl_ix_out);
+void paging_free_4gb(struct paging_4gb_chunk* chunk);
 
 #endif
