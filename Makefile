@@ -1,7 +1,7 @@
 C_COMPILER = i686-elf-gcc
-FILES = ./build/kernel.asm.o ./build/kernel.o ./build/idt.asm.o ./build/idt.o ./build/memory.o ./build/io.asm.o ./build/paging.asm.o ./build/console.o ./build/string.o ./build/heap.o ./build/kheap.o ./build/paging.o ./build/disk.o ./build/pparser.o ./build/streamer.o ./build/file.o ./build/fat16.o ./build/utility.o ./build/gdt.o ./build/gdt.asm.o ./build/tss.asm.o ./build/task.o ./build/process.o
+FILES = ./build/kernel.asm.o ./build/idt.asm.o ./build/io.asm.o ./build/task.asm.o ./build/tss.asm.o ./build/gdt.asm.o ./build/paging.asm.o ./build/kernel.o ./build/idt.o ./build/memory.o ./build/console.o ./build/string.o ./build/heap.o ./build/kheap.o ./build/paging.o ./build/disk.o ./build/pparser.o ./build/streamer.o ./build/file.o ./build/fat16.o ./build/utility.o ./build/gdt.o ./build/task.o ./build/process.o
 INCLUDES = -I./src
-FLAGS = -g -ffreestanding -falign-jumps -falign-functions -falign-labels -falign-loops -fstrength-reduce -fomit-frame-pointer -finline-functions -Wno-unused-function -fno-builtin -Wno-unused-label -Wno-cpp -Wno-unused-parameter -nostdlib -nostartfiles -nodefaultlibs -Wall -O0 -Iinc
+FLAGS = -g -ffreestanding -falign-jumps -falign-functions -falign-labels -falign-loops -fstrength-reduce -fomit-frame-pointer -finline-functions -Wno-unused-function -fno-builtin -Werror -Wno-unused-label -Wno-cpp -Wno-unused-parameter -nostdlib -nostartfiles -nodefaultlibs -Wall -O0 -Iinc
 
 all: ./bin/boot.bin ./bin/kernel.bin
 	rm -rf ./bin/os.bin
@@ -19,26 +19,29 @@ all: ./bin/boot.bin ./bin/kernel.bin
 	i686-elf-ld -g -relocatable $(FILES) -o ./build/kernelfull.o
 	i686-elf-gcc $(FLAGS) -T ./linker.ld -o ./bin/kernel.bin -ffreestanding -O0 -nostdlib ./build/kernelfull.o
 
-./bin/boot.bin: ./src/sys/boot.asm
-	nasm -f bin ./src/sys/boot.asm -o ./bin/boot.bin
+./bin/boot.bin: ./src/x86/boot.asm
+	nasm -f bin ./src/x86/boot.asm -o ./bin/boot.bin
 
-./build/kernel.asm.o: ./src/sys/kernel.asm
-	nasm -f elf -g ./src/sys/kernel.asm -o ./build/kernel.asm.o
+./build/kernel.asm.o: ./src/x86/kernel.asm
+	nasm -f elf -g ./src/x86/kernel.asm -o ./build/kernel.asm.o
 
-./build/gdt.asm.o: ./src/sys/gdt.asm
-	nasm -f elf -g ./src/sys/gdt.asm -o ./build/gdt.asm.o
+./build/gdt.asm.o: ./src/x86/gdt.asm
+	nasm -f elf -g ./src/x86/gdt.asm -o ./build/gdt.asm.o
 
-./build/idt.asm.o: ./src/sys/idt.asm
-	nasm -f elf -g ./src/sys/idt.asm -o ./build/idt.asm.o
+./build/idt.asm.o: ./src/x86/idt.asm
+	nasm -f elf -g ./src/x86/idt.asm -o ./build/idt.asm.o
 
-./build/io.asm.o: ./src/sys/io.asm
-	nasm -f elf -g ./src/sys/io.asm -o ./build/io.asm.o
+./build/io.asm.o: ./src/x86/io.asm
+	nasm -f elf -g ./src/x86/io.asm -o ./build/io.asm.o
 
-./build/tss.asm.o: ./src/proc/tss.asm
-	nasm -f elf -g ./src/proc/tss.asm -o ./build/tss.asm.o
+./build/task.asm.o: ./src/x86/task.asm
+	nasm -f elf -g ./src/x86/task.asm -o ./build/task.asm.o
 
-./build/paging.asm.o: ./src/mem/paging.asm
-	nasm -f elf -g ./src/mem/paging.asm -o ./build/paging.asm.o
+./build/tss.asm.o: ./src/x86/tss.asm
+	nasm -f elf -g ./src/x86/tss.asm -o ./build/tss.asm.o
+
+./build/paging.asm.o: ./src/x86/paging.asm
+	nasm -f elf -g ./src/x86/paging.asm -o ./build/paging.asm.o
 
 ./build/kernel.o: ./src/sys/kernel.c
 	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/sys/kernel.c -o ./build/kernel.o
