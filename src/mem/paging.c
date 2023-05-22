@@ -59,6 +59,54 @@ bool paging_is_aligned(void* addr)
     return ((uint32_t)addr % PAGING_PAGE_SIZE) == 0;
 }
 
+int paging_map_to(uint32_t* directory, void* virt, void* phys, void* phys_end, int flags)
+{
+    int r = 0;
+
+    if((uint32_t)virt % PAGING_PAGE_SIZE)
+    {
+        r = -EINVARG;
+        goto out;
+    }
+
+    if((uint32_t)phys % PAGING_PAGE_SIZE)
+    {
+        r = -EINVARG;
+        goto out;
+    }
+
+    if((uint32_t)phys_end % PAGING_PAGE_SIZE)
+    {
+        r = -EINVARG;
+        goto out;
+    }
+
+    if((uint32_t)phys_end < (uint32_t)phys)
+    {
+        r = -EINVARG;
+        goto out;
+    }
+
+    uint32_t total_bytes = phys_end - phys;
+    int total_pages = total_bytes / PAGING_PAGE_SIZE;
+
+    r = paging_map_range(directory, virt, phys, total_pages, flags);
+out:
+    return r;
+}
+
+int paging_map_range(uint32_t* directory, void* virt, void* phys, int total_pages, int flags)
+{
+    int r = 0;
+
+    return r;
+}
+
+int paging_align_address(int size)
+{
+    return 0;
+}
+
 int paging_set(uint32_t* directory, void* virt, uint32_t val) 
 {
     int r = 0;

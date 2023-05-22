@@ -1,4 +1,5 @@
 #include "proc/task.h"
+#include "proc/process.h"
 #include "mem/memory.h"
 #include "mem/kheap.h"
 #include "sys/status.h"
@@ -14,7 +15,7 @@ struct task* task_current()
     return current_task;
 }
 
-struct task* task_new()
+struct task* task_new(struct process* process)
 {
     int r = 0;
 

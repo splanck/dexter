@@ -34,5 +34,7 @@ struct process* process_current();
 int process_get(int index);
 int process_load_data(const char* filename, struct process* process);
 int process_load_binary(const char* filename, struct process* process);
+int process_map_memory(struct process* process);
+int process_map_binary(struct process* process);
 
 #endif
