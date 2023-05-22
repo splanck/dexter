@@ -27,7 +27,7 @@ struct task* task_new(struct process* process)
         goto out;
     }
 
-    r = task_init(task);
+    r = task_init(task, process);
 
     if(r != DEXTER_ALL_OK)
     {
@@ -101,7 +101,7 @@ int task_free(struct task* task)
     return 0;
 }
 
-int task_init(struct task* task)
+int task_init(struct task* task, struct process* process)
 {
     int r = 0;
 
@@ -117,7 +117,7 @@ int task_init(struct task* task)
     task->registers.ip = DEXTER_PROGRAM_VIRTUAL_ADDRESS;
     task->registers.ss = USER_DATA_SEGMENT;
     task->registers.esp = DEXTER_PROGRAM_VIRTUAL_STACK_ADDRESS_START;
-    
+    task->process = process;
 out:
     return r;
 }

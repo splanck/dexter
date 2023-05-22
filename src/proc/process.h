@@ -31,7 +31,9 @@ struct process
 
 int process_load_for_slot(const char* filename, struct process** process, int process_slot);
 struct process* process_current();
-int process_get(int index);
+struct process* process_get(int process_id);
+int process_get_free_slot();
+int process_load(const char* filename, struct process** process);
 int process_load_data(const char* filename, struct process* process);
 int process_load_binary(const char* filename, struct process* process);
 int process_map_memory(struct process* process);
