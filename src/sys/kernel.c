@@ -3,7 +3,10 @@
 #include "sys/io.h"
 #include "sys/gdt.h"
 #include "sys/config.h"
+#include "sys/status.h"
 #include "proc/tss.h"
+#include "proc/task.h"
+#include "proc/process.h"
 #include "mem/heap.h"
 #include "mem/kheap.h"
 #include "mem/paging.h"
@@ -77,6 +80,19 @@ out:
     return;
 }
 
+void load_user_program_test()
+{
+    struct process* process = 0;
+    int r = process_load("0:/blank.bin", &process);
+
+    if(r != DEXTER_ALL_OK)
+    {
+        panic("Failed to load blank.bin");
+    }
+
+    task_run_first_task();
+}
+
 // Enables memory paging using the enable_paging() function from paging.c
 void start_paging() 
 {
@@ -114,7 +130,7 @@ void panic(const char* msg)
     while(1);
 }
 
-void kernel_main() 
+void kernel_init()
 {
     // Initialize terminal for text mode
     terminal_initialize();
@@ -131,11 +147,6 @@ void kernel_main()
     kheap_init();
 #ifdef VERBOSE
     cprint("Kernel memory heap initialized.\n", 13);
-#endif
-
-#ifdef DEBUG
-    memory_allocation_test();
-    cprint("Memory allocation test completed.\n", 12);
 #endif
 
     // Inititalize file systems
@@ -169,14 +180,27 @@ void kernel_main()
 #endif
 
     // Enable interrupts
-    enable_interrupts();
-#ifdef VERBOSE
-    cprint("Interrupts enabled.\n\n", 12);
+//     enable_interrupts();
+// #ifdef VERBOSE
+//     cprint("Interrupts enabled.\n\n", 12);
+// #endif
+
+}
+
+void kernel_main() 
+{
+    kernel_init();
+
+#ifdef DEBUG
+    memory_allocation_test();
+    cprint("Memory allocation test completed.\n", 12);
 #endif
 
 #ifdef DEBUG
     open_file("0:/hello.txt");
     open_file("0:/license.txt");
+
+    load_user_program_test();
 #endif
 
     while(1);

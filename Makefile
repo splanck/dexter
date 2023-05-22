@@ -3,7 +3,7 @@ FILES = ./build/kernel.asm.o ./build/idt.asm.o ./build/io.asm.o ./build/task.asm
 INCLUDES = -I./src
 FLAGS = -g -ffreestanding -falign-jumps -falign-functions -falign-labels -falign-loops -fstrength-reduce -fomit-frame-pointer -finline-functions -Wno-unused-function -fno-builtin -Werror -Wno-unused-label -Wno-cpp -Wno-unused-parameter -nostdlib -nostartfiles -nodefaultlibs -Wall -O0 -Iinc
 
-all: ./bin/boot.bin ./bin/kernel.bin
+all: ./bin/boot.bin ./bin/kernel.bin user_programs
 	rm -rf ./bin/os.bin
 	dd if=./bin/boot.bin >> ./bin/os.bin
 	dd if=./bin/kernel.bin >> ./bin/os.bin
@@ -11,6 +11,7 @@ all: ./bin/boot.bin ./bin/kernel.bin
 	sudo mkdir -p /mnt/d
 	sudo mount -t vfat ./bin/os.bin /mnt/d
 	sudo cp ./doc/hello.txt /mnt/d
+	sudo cp ./progs/blank/blank.bin /mnt/d
 	sudo cp ./LICENSE /mnt/d/license.txt
 	sudo umount /mnt/d
 	cp ./bin/os.bin ./images/dexter.img
@@ -94,10 +95,16 @@ all: ./bin/boot.bin ./bin/kernel.bin
 ./build/process.o: ./src/proc/process.c
 	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/proc/process.c -o ./build/process.o
 
+user_programs:
+	cd ./progs/blank && $(MAKE) all
+
+user_programs_clean:
+	cd ./progs/blank && $(MAKE) clean
+
 run:
 	qemu-system-i386 -hda ./images/dexter.img
 
-clean:
+clean: user_programs_clean
 	rm -rf ./bin
 	rm -rf ${FILES}
 	rm -rf ./build
