@@ -3,6 +3,7 @@ section .asm
 
 global task_return
 global restore_general_purpose_registers
+global user_registers
 
 task_return:
     mov ebp, esp
@@ -45,5 +46,14 @@ restore_general_purpose_registers:
     mov ebx, [ebp+12]
     
     pop ebp
+    
+    ret
+
+user_registers:
+    mov ax, 0x23
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
     
     ret
