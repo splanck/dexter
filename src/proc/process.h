@@ -29,4 +29,8 @@ struct process
     uint32_t size;
 };
 
+int process_load_for_slot(const char* filename, struct process** process, int process_slot);
+struct process* process_current();
+int process_get(int index);
+
 #endif
