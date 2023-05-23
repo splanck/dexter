@@ -5,6 +5,7 @@
 #include "sys/status.h"
 #include "sys/kernel.h"
 #include "sys/config.h"
+#include "lib/console.h"
 
 struct task* current_task = 0;
 struct task* task_head = 0;
@@ -99,7 +100,9 @@ void task_run_first_task()
         panic("task_run_first_task(): No task exists.\n");
     }
 
+    print("Switching to first task.\n");
     task_switch(task_head);
+    print("Calling task_return\n");
     task_return(&task_head->registers);
 }
 

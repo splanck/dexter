@@ -82,6 +82,8 @@ out:
 
 void load_user_program_test()
 {
+    print("Starting process load.\n");
+
     struct process* process = 0;
     int r = process_load("0:/blank.bin", &process);
 
@@ -90,7 +92,9 @@ void load_user_program_test()
         panic("Failed to load blank.bin");
     }
 
+    print("Calling task_run_first_task.\n");
     task_run_first_task();
+    print("Task running.\n");
 }
 
 // Enables memory paging using the enable_paging() function from paging.c
@@ -200,7 +204,7 @@ void kernel_main()
     open_file("0:/hello.txt");
     open_file("0:/license.txt");
 
-    load_user_program_test();
+    //load_user_program_test();
 #endif
 
     while(1);
