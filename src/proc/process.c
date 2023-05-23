@@ -181,9 +181,9 @@ int process_map_binary(struct process* process)
 {
     int r = 0;
 
-    paging_map_to(process->task->page_directory->directory_entry, (void*) DEXTER_PROGRAM_VIRTUAL_ADDRESS,
-        process->ptr, paging_align_address(process->ptr + process->size), 
-        PAGING_IS_PRESENT | PAGING_IS_WRITEABLE | PAGING_ACCESS_FROM_ALL);
+    paging_map_to(process->task->page_directory, (void*) DEXTER_PROGRAM_VIRTUAL_ADDRESS, process->ptr, 
+        paging_align_address(process->ptr + process->size), PAGING_IS_PRESENT 
+        | PAGING_IS_WRITEABLE | PAGING_ACCESS_FROM_ALL);
 
     return r;
 }
