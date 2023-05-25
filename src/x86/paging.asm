@@ -14,10 +14,10 @@ paging_load_directory:
     ret
 
 enable_paging:
-    push ebx
+    push ebp
     mov ebp, esp
     mov eax, cr0
-    or eax, 0x800000000
+    or eax, 0x80000000
     mov cr0, eax
     pop ebp
     ret

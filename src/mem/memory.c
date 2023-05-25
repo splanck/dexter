@@ -1,71 +1,38 @@
 #include "mem/memory.h"
 #include "mem/heap.h"
 
-int memmove(void *dest, const void *src, size_t n) 
+void* memset(void* ptr, int c, size_t size)
+{
+    char* c_ptr = (char*) ptr;
+    for (int i = 0; i < size; i++)
+    {
+        c_ptr[i] = (char) c;
+    }
+    return ptr;
+}
+
+int memcmp(void* s1, void* s2, int count)
+{
+    char* c1 = s1;
+    char* c2 = s2;
+    while(count-- > 0)
+    {
+        if (*c1++ != *c2++)
+        {
+            return c1[-1] < c2[-1] ? -1 : 1;
+        }
+    }
+
+    return 0;
+}
+
+void* memcpy(void* dest, void* src, int len)
 {
     char *d = dest;
-    const char *s = src;
-
-    if (s < d)
+    char *s = src;
+    while(len--)
     {
-        s += n;
-        d += n;
-    
-        while (n--) 
-        {
-            *(--d) = *(--s);
-        }
-    } 
-    else 
-    {
-        while (n--) 
-        {
-            *(d++) = *(s++);
-        }
+        *d++ = *s++;
     }
-    
-    return (int)dest;
-}
-
-int memset(void* ptr, int c, size_t size) 
-{
-    char* c_ptr = (char*)ptr;
-
-    for(int i = 0; i < size; i++)
-    {
-        c_ptr[i] = (char)c;
-    }
-
-    return 0;
-}
-
-int memcmp(const void *s1, const void *s2, size_t n) 
-{
-    const unsigned char *p1 = s1, *p2 = s2;
-
-    while(n--) 
-    {
-        if(*p1 != *p2) 
-        {
-            return (*p1 > *p2) ? 1 : -1;
-        }
-
-        p1++;
-        p2++;
-    }
-
-    return 0;
-}
-
-int memcpy(void *dest, const void *src, size_t n) 
-{
-    char *csrc = (char *)src;
-    char *cdest = (char *)dest;
-
-    for (int i = 0; i < n; i++)
-    {
-        cdest[i] = csrc[i];
-    }
-
-    return 0;
+    return dest;
 }

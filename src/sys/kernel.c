@@ -93,7 +93,7 @@ void load_user_program_test()
     }
 
     print("Calling task_run_first_task.\n");
-    task_run_first_task();
+    task_run_first_ever_task();
     print("Task running.\n");
 }
 
@@ -204,7 +204,8 @@ void kernel_main()
     open_file("0:/hello.txt");
     open_file("0:/license.txt");
 
-    //load_user_program_test();
+    load_user_program_test();
+    print("load_user_program_test function exited.\n");
 #endif
 
     while(1);

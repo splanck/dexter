@@ -37,13 +37,13 @@ restore_general_purpose_registers:
     
     mov ebp, esp
     mov ebx, [ebp+8]
-    mov edi, ebx
-    mov esi, [ebp+4]
-    mov ebp, [ebp+8]
-    mov edx, [ebp+16]
-    mov ecx, [ebp+20]
-    mov eax, [ebp+24]
-    mov ebx, [ebp+12]
+    mov edi, [ebx]
+    mov esi, [ebx+4]
+    mov ebp, [ebx+8]
+    mov edx, [ebx+16]
+    mov ecx, [ebx+20]
+    mov eax, [ebx+24]
+    mov ebx, [ebx+12]
     
     pop ebp
     

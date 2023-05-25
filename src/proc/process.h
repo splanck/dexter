@@ -1,42 +1,34 @@
 #ifndef PROCESS_H
-#define PROCESS_h
-
+#define PROCESS_H
 #include <stdint.h>
-#include "sys/config.h"
 #include "proc/task.h"
+#include "sys/config.h"
 
 struct process
 {
-    // Process id
+    // The process id
     uint16_t id;
 
-    // Executable filename
     char filename[DEXTER_MAX_PATH];
 
-    // Task for the current process
+    // The main process task
     struct task* task;
 
-    // Memory allocations for process
+    // The memory (malloc) allocations of the process
     void* allocations[DEXTER_MAX_PROGRAM_ALLOCATIONS];
 
-    // Pointer to process memory
+    // The physical pointer to the process memory.
     void* ptr;
 
-    // Pointer to stack
+    // The physical pointer to the stack memory
     void* stack;
 
-    // Size of ptr
+    // The size of the data pointed to by "ptr"
     uint32_t size;
+
 };
 
-int process_load_for_slot(const char* filename, struct process** process, int process_slot);
-struct process* process_current();
-struct process* process_get(int process_id);
-int process_get_free_slot();
 int process_load(const char* filename, struct process** process);
-int process_load_data(const char* filename, struct process* process);
-int process_load_binary(const char* filename, struct process* process);
-int process_map_memory(struct process* process);
-int process_map_binary(struct process* process);
+int process_load_for_slot(const char* filename, struct process** process, int process_slot);
 
 #endif

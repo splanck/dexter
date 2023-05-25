@@ -1,6 +1,5 @@
 #ifndef GDT_H
 #define GDT_H
-
 #include <stdint.h>
 
 struct gdt
@@ -11,7 +10,7 @@ struct gdt
     uint8_t access;
     uint8_t high_flags;
     uint8_t base_24_31_bits;
-}__attribute__((packed));
+} __attribute__((packed));
 
 struct gdt_structured
 {
@@ -21,6 +20,6 @@ struct gdt_structured
 };
 
 void gdt_load(struct gdt* gdt, int size);
-void gdt_structured_to_gdt(struct gdt* gdt, struct gdt_structured* structured_gdt, int total_entries);
+void gdt_structured_to_gdt(struct gdt* gdt, struct gdt_structured* structured_gdt, int total_entires);
 
 #endif
