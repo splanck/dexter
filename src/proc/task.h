@@ -4,6 +4,9 @@
 #include "sys/config.h"
 #include "mem/paging.h"
 
+struct interrupt_frame;
+struct process;
+
 struct registers
 {
     uint32_t edi;
@@ -21,8 +24,6 @@ struct registers
     uint32_t ss;
 };
 
-
-struct process;
 struct task
 {
     /**
@@ -47,12 +48,11 @@ struct task* task_new(struct process* process);
 struct task* task_current();
 struct task* task_get_next();
 int task_free(struct task* task);
-
 int task_switch(struct task* task);
 int task_page();
-
+void task_current_save_state(struct interrupt_frame* frame);
+void task_save_state(struct task* task, struct interrupt_frame* frame);
 void task_run_first_ever_task();
-
 void task_return(struct registers* regs);
 void restore_general_purpose_registers(struct registers* regs);
 void user_registers();

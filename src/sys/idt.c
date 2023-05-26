@@ -3,6 +3,7 @@
 #include "sys/kernel.h"
 #include "sys/io.h"
 #include "mem/memory.h"
+#include "proc/task.h"
 #include "lib/console.h"
 
 struct idt_desc idt_descriptors[DEXTER_TOTAL_INTERUPTS];
@@ -17,6 +18,24 @@ void int21h_handler()
     print("Keyboard pressed!\n");
 
     outb(0x20, 0x20);
+}
+
+void* isr80h_handle_command(int command, struct interrupt_frame* frame)
+{
+    return 0;
+}
+
+void* isr80h_handler(int command, struct interrupt_frame* frame)
+{
+    void* r = 0;
+    kernel_page();
+
+    task_current_save_state(frame);
+    r = isr80h_handle_command(command, frame);
+
+    task_page();
+
+    return r;
 }
 
 void no_interrupt_handler() 

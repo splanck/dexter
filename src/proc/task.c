@@ -1,5 +1,6 @@
 #include "proc/task.h"
 #include "sys/kernel.h"
+#include "sys/idt.h"
 #include "sys/status.h"
 #include "proc/process.h"
 #include "mem/kheap.h"
@@ -13,7 +14,6 @@ struct task* task_tail = 0;
 struct task* task_head = 0;
 
 int task_init(struct task* task, struct process* process);
-
 
 struct task* task_current()
 {
@@ -113,6 +113,33 @@ int task_page()
     user_registers();
     task_switch(current_task);
     return 0;
+}
+
+void task_save_state(struct task* task, struct interrupt_frame* frame)
+{
+    task->registers.ip = frame->ip;
+    task->registers.cs = frame->cs;
+    task->registers.flags = frame->flags;
+    task->registers.esp = frame->esp;
+    task->registers.ss = frame->ss;
+    task->registers.eax = frame->eax;
+    task->registers.ebp = frame->ebp;
+    task->registers.ebx = frame->ebx;
+    task->registers.ecx = frame->ecx;
+    task->registers.edi = frame->edi;
+    task->registers.edx = frame->edx;
+    task->registers.esi = frame->esi;
+}
+
+void task_current_save_state(struct interrupt_frame* frame)
+{
+    if(!task_current())
+    {
+        panic("task_current_save_state: No current task to save\n");
+    }
+
+    struct task* task = task_current();
+    task_save_state(task, frame);
 }
 
 void task_run_first_ever_task()

@@ -134,6 +134,12 @@ void panic(const char* msg)
     while(1);
 }
 
+void kernel_page()
+{
+    kernel_registers();
+    paging_switch(kernel_chunk);
+}
+
 void kernel_init()
 {
     // Initialize terminal for text mode
