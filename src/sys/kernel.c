@@ -7,6 +7,7 @@
 #include "proc/tss.h"
 #include "proc/task.h"
 #include "proc/process.h"
+#include "proc/isr80h.h"
 #include "mem/heap.h"
 #include "mem/kheap.h"
 #include "mem/paging.h"
@@ -169,6 +170,12 @@ void kernel_init()
     start_paging();
 #ifdef VERBOSE
     cprint("Paging enabled.\n", 10);
+#endif
+
+    // Register interrupt 80 kernel commands
+    isr80h_register_commands();
+#ifdef VERBOSE
+    print("Kernel commands registered.\n");
 #endif
 
     // Setup the disk

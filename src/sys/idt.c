@@ -27,7 +27,7 @@ void* isr80h_handle_command(int command, struct interrupt_frame* frame)
 {
     void* r = 0;
 
-    if(command <= 0 || command >= DEXTER_MAX_ISR80H_COMMANDS)
+    if(command < 0 || command >= DEXTER_MAX_ISR80H_COMMANDS)
     {
         return 0;
     }
@@ -80,7 +80,7 @@ void idt_set(int interrupt_no, void* address)
 
 void isr80h_register_command(int command_id, ISR80H_COMMAND command)
 {
-    if(command_id <= 0 || command_id >= DEXTER_MAX_ISR80H_COMMANDS)
+    if(command_id < 0 || command_id >= DEXTER_MAX_ISR80H_COMMANDS)
     {
         panic("isr80h_register_command(): Command is out of bounds.\n");
     }
