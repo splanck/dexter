@@ -9,9 +9,12 @@
 struct idt_desc idt_descriptors[DEXTER_TOTAL_INTERUPTS];
 struct idtr_desc idtr_descriptor;
 
+static ISR80H_COMMAND isr80h_commands[DEXTER_MAX_ISR80H_COMMANDS];
+
 extern void idt_load(struct idtr_desc* ptr);
 extern void int21h();
 extern void no_interrupt();
+extern void isr80h_wrapper();
 
 void int21h_handler() 
 {
@@ -22,7 +25,23 @@ void int21h_handler()
 
 void* isr80h_handle_command(int command, struct interrupt_frame* frame)
 {
-    return 0;
+    void* r = 0;
+
+    if(command <= 0 || command >= DEXTER_MAX_ISR80H_COMMANDS)
+    {
+        return 0;
+    }
+
+    ISR80H_COMMAND command_func = isr80h_commands[command];
+
+    if(!command_func)
+    {
+        return 0;
+    }
+
+    r = command_func(frame);
+
+    return r;
 }
 
 void* isr80h_handler(int command, struct interrupt_frame* frame)
@@ -59,6 +78,21 @@ void idt_set(int interrupt_no, void* address)
     desc->offset_2 = (uint32_t) address >> 16;
 }
 
+void isr80h_register_command(int command_id, ISR80H_COMMAND command)
+{
+    if(command_id <= 0 || command_id >= DEXTER_MAX_ISR80H_COMMANDS)
+    {
+        panic("isr80h_register_command(): Command is out of bounds.\n");
+    }
+
+    if(isr80h_commands[command_id])
+    {
+        panic("isr80h_register_command(): Cannot register command because it will override an existing command.\n");
+    }
+
+    isr80h_commands[command_id] = command;
+}
+
 void idt_init() 
 {
     memset(idt_descriptors, 0, sizeof(idt_descriptors));
@@ -73,6 +107,7 @@ void idt_init()
 
     idt_set(0, idt_zero);
     idt_set(0x21, int21h);
+    idt_set(0x80, isr80h_wrapper);
 
     // Load the interrupt descriptor table
     idt_load(&idtr_descriptor);
