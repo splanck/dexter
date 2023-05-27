@@ -9,5 +9,6 @@ f = execute until function is finished
 l = List current code context
 ctrl-2 = display asm instructions
 info locals = show all local variables in scope
+break *0x400000 = place break point to start of user program
 
 

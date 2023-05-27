@@ -1,8 +1,8 @@
 #include "proc/task.h"
+#include "proc/process.h"
 #include "sys/kernel.h"
 #include "sys/idt.h"
 #include "sys/status.h"
-#include "proc/process.h"
 #include "mem/kheap.h"
 #include "mem/memory.h"
 
@@ -23,6 +23,7 @@ struct task* task_current()
 struct task* task_new(struct process* process)
 {
     int res = 0;
+
     struct task* task = kzalloc(sizeof(struct task));
     if (!task)
     {
@@ -31,6 +32,7 @@ struct task* task_new(struct process* process)
     }
 
     res = task_init(task, process);
+
     if (res != DEXTER_ALL_OK)
     {
         goto out;
@@ -156,8 +158,9 @@ void task_run_first_ever_task()
 int task_init(struct task* task, struct process* process)
 {
     memset(task, 0, sizeof(struct task));
-    // Map the entire 4GB address space to its self
+    
     task->page_directory = paging_new_4gb(PAGING_IS_PRESENT | PAGING_ACCESS_FROM_ALL);
+    
     if (!task->page_directory)
     {
         return -EIO;
