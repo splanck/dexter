@@ -161,6 +161,13 @@ int task_page()
     return 0;
 }
 
+int task_page_task(struct task* task)
+{
+    user_registers();
+    paging_switch(task->page_directory);
+    return 0;
+}
+
 void task_save_state(struct task* task, struct interrupt_frame* frame)
 {
     task->registers.ip = frame->ip;
@@ -219,3 +226,19 @@ int task_init(struct task* task, struct process* process)
 
     return 0;
 }
+
+void* task_get_stack_item(struct task* task, int index)
+{
+    void* r = 0;
+
+    uint32_t* sp_ptr = (uint32_t*)task->registers.esp;
+    
+    task_page_task(task);
+
+    r = (void*) sp_ptr[index];
+    kernel_page();
+
+    return r;
+}
+
+

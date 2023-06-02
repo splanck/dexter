@@ -36,17 +36,17 @@ struct process* process_get(int process_id)
 
 static int process_load_binary(const char* filename, struct process* process)
 {
-    int res = 0;
+    int r = 0;
     int fd = fopen(filename, "r");
     if (!fd)
     {
-        res = -EIO;
+        r = -EIO;
         goto out;
     }
 
     struct file_stat stat;
-    res = fstat(fd, &stat);
-    if (res != DEXTER_ALL_OK)
+    r = fstat(fd, &stat);
+    if (r != DEXTER_ALL_OK)
     {
         goto out;
     }
@@ -54,13 +54,13 @@ static int process_load_binary(const char* filename, struct process* process)
     void* program_data_ptr = kzalloc(stat.filesize);
     if (!program_data_ptr)
     {
-        res = -ENOMEM;
+        r = -ENOMEM;
         goto out;
     }
 
     if (fread(program_data_ptr, stat.filesize, 1, fd) != 1)
     {
-        res = -EIO;
+        r = -EIO;
         goto out;
     }
 
@@ -69,8 +69,9 @@ static int process_load_binary(const char* filename, struct process* process)
 
 out:
     fclose(fd);
-    return res;
+    return r;
 }
+
 static int process_load_data(const char* filename, struct process* process)
 {
     int res = 0;
@@ -84,11 +85,23 @@ int process_map_binary(struct process* process)
     paging_map_to(process->task->page_directory, (void*) DEXTER_PROGRAM_VIRTUAL_ADDRESS, process->ptr, paging_align_address(process->ptr + process->size), PAGING_IS_PRESENT | PAGING_ACCESS_FROM_ALL | PAGING_IS_WRITEABLE);
     return res;
 }
+
 int process_map_memory(struct process* process)
 {
-    int res = 0;
-    res = process_map_binary(process);
-    return res;
+    int r = 0;
+    r = process_map_binary(process);
+    
+    if(r < 0)
+    {
+        goto out;
+    }
+    
+    paging_map_to(process->task->page_directory, (void*)DEXTER_PROGRAM_VIRTUAL_STACK_ADDRESS_END, 
+        process->stack, paging_align_address(process->stack+DEXTER_USER_PROGRAM_STACK_SIZE), 
+        PAGING_ACCESS_FROM_ALL | PAGING_IS_PRESENT | PAGING_IS_WRITEABLE);
+    
+out:    
+    return r;
 }
 
 int process_get_free_slot()
@@ -96,7 +109,9 @@ int process_get_free_slot()
     for (int i = 0; i < DEXTER_MAX_PROCESSES; i++)
     {
         if (processes[i] == 0)
+        {
             return i;
+        }
     }
 
     return -EISTKN;
@@ -104,69 +119,77 @@ int process_get_free_slot()
 
 int process_load(const char* filename, struct process** process)
 {
-    int res = 0;
+    int r = 0;
     int process_slot = process_get_free_slot();
+
     if (process_slot < 0)
     {
-        res = -EISTKN;
+        r = -EISTKN;
         goto out;
     }
 
-    res = process_load_for_slot(filename, process, process_slot);
+    r = process_load_for_slot(filename, process, process_slot);
 out:
-    return res;
+    return r;
 }
 
 int process_load_for_slot(const char* filename, struct process** process, int process_slot)
 {
-    int res = 0;
+    int r = 0;
+    
     struct task* task = 0;
     struct process* _process;
     void* program_stack_ptr = 0;
 
     if (process_get(process_slot) != 0)
     {
-        res = -EISTKN;
+        r = -EISTKN;
         goto out;
     }
 
     _process = kzalloc(sizeof(struct process));
+
     if (!_process)
     {
-        res = -ENOMEM;
+        r = -ENOMEM;
         goto out;
     }
 
     process_init(_process);
-    res = process_load_data(filename, _process);
-    if (res < 0)
+
+    r = process_load_data(filename, _process);
+    
+    if (r < 0)
     {
         goto out;
     }
 
     program_stack_ptr = kzalloc(DEXTER_USER_PROGRAM_STACK_SIZE);
+
     if (!program_stack_ptr)
     {
-        res = -ENOMEM;
+        r = -ENOMEM;
         goto out;
     }
 
     strncpy(_process->filename, filename, sizeof(_process->filename));
+
     _process->stack = program_stack_ptr;
     _process->id = process_slot;
 
     // Create a task
     task = task_new(_process);
+    
     if (ERROR_I(task) == 0)
     {
-        res = ERROR_I(task);
+        r = ERROR_I(task);
         goto out;
     }
 
     _process->task = task;
 
-    res = process_map_memory(_process);
-    if (res < 0)
+    r = process_map_memory(_process);
+    if (r < 0)
     {
         goto out;
     }
@@ -177,7 +200,7 @@ int process_load_for_slot(const char* filename, struct process** process, int pr
     processes[process_slot] = _process;
 
 out:
-    if (ISERR(res))
+    if (ISERR(r))
     {
         if (_process && _process->task)
         {
@@ -186,5 +209,6 @@ out:
 
        // Free the process data
     }
-    return res;
+
+    return r;
 }
