@@ -5,6 +5,8 @@
 #include "sys/status.h"
 #include "mem/kheap.h"
 #include "mem/memory.h"
+#include "mem/paging.h"
+#include "lib/string.h"
 
 // The current task that is running
 struct task* current_task = 0;
@@ -12,6 +14,48 @@ struct task* current_task = 0;
 // Task linked list
 struct task* task_tail = 0;
 struct task* task_head = 0;
+
+int copy_string_from_task(struct task* task, void* virtual, void* phys, int max)
+{
+    int r = 0;
+    
+    if(max >= PAGING_PAGE_SIZE)
+    {
+        r = -EINVARG;
+        goto out;
+    }
+
+    char* tmp = kzalloc(max);
+
+    if(!tmp)
+    {
+        r = -ENOMEM;
+        goto out;
+    }
+
+    uint32_t* task_directory = task->page_directory->directory_entry;
+    uint32_t old_entry = paging_get(task_directory, tmp);
+    paging_map(task->page_directory, tmp, tmp, PAGING_IS_WRITEABLE | PAGING_IS_PRESENT | PAGING_ACCESS_FROM_ALL);
+    paging_switch(task->page_directory);
+
+    strncpy(tmp, virtual, max);
+    kernel_page();
+
+    r = paging_set(task_directory, tmp, old_entry);
+
+    if(r < 0)
+    {
+        r = -EIO;
+        goto out_free;
+    }
+
+    strncpy(phys, tmp, max);
+
+out_free:
+    kfree(tmp);
+out:
+    return r;
+}
 
 int task_init(struct task* task, struct process* process);
 

@@ -5,5 +5,4 @@ all:
 
 clean:
 	rm -rf ./build/
-	rm ./blank.bin
 	
