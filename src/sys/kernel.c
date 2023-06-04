@@ -15,6 +15,7 @@
 #include "fs/disk.h"
 #include "fs/file.h"
 #include "lib/console.h"
+#include "dev/keyboard.h"
 
 static struct paging_4gb_chunk* kernel_chunk = 0;
 struct tss tss;
@@ -176,6 +177,12 @@ void kernel_init()
     isr80h_register_commands();
 #ifdef VERBOSE
     print("Kernel commands registered.\n");
+#endif
+
+    // Initialize keyboard
+    keyboard_init();
+#ifdef VERBOSE
+    print("Keyboard initialized.\n");
 #endif
 
     // Setup the disk

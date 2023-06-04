@@ -1,13 +1,13 @@
 #include "proc/process.h"
+#include "proc/task.h"
 #include "sys/config.h"
 #include "sys/status.h"
-#include "proc/task.h"
+#include "sys/kernel.h"
 #include "mem/memory.h"
-#include "lib/string.h"
-#include "fs/file.h"
 #include "mem/kheap.h"
 #include "mem/paging.h"
-#include "sys/kernel.h"
+#include "lib/string.h"
+#include "fs/file.h"
 
 // The current process that is running
 struct process* current_process = 0;
@@ -187,8 +187,8 @@ int process_load_for_slot(const char* filename, struct process** process, int pr
     }
 
     _process->task = task;
-
     r = process_map_memory(_process);
+
     if (r < 0)
     {
         goto out;
