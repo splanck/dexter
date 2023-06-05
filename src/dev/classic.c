@@ -1,7 +1,6 @@
 #include "dev/classic.h"
 #include "dev/keyboard.h"
 #include "sys/io.h"
-#include <stdint.h>
 
 static uint8_t keyboard_scan_set_one[] =
 {
@@ -19,9 +18,23 @@ struct keyboard classic_keyboard =
     .init = classic_keyboard_init
 };
 
+uint8_t classic_keyboard_scancode_to_char(uint8_t scancode)
+{
+    size_t size_of_keyboard_set_one = sizeof(keyboard_scan_set_one) / sizeof(uint8_t);
+
+    if(scancode > size_of_keyboard_set_one)
+    {
+        return 0;
+    }
+
+    char c = keyboard_scan_set_one[scancode];
+
+    return c;
+}
+
 int classic_keyboard_init()
 {
-    outb(0x64, 0xAE);
+    outb(PS2_PORT, PS2_COMMAND_ENABLE_FIRST_PORT);
     
     return 0;
 }
@@ -29,4 +42,9 @@ int classic_keyboard_init()
 struct keyboard* clasic_init()
 {
     return &classic_keyboard;
+}
+
+void classic_keyboard_interrupt_handler()
+{
+    
 }
