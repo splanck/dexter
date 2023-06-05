@@ -1,4 +1,5 @@
 #include "dev/keyboard.h"
+#include "dev/classic.h"
 #include "sys/status.h"
 #include "sys/kernel.h"
 #include "proc/process.h"
@@ -84,7 +85,7 @@ out:
 
 void keyboard_init()
 {
-
+    keyboard_insert(clasic_init());
 }
 
 
