@@ -39,12 +39,12 @@ int classic_keyboard_init()
     return 0;
 }
 
-struct keyboard* clasic_init()
+struct keyboard* classic_init()
 {
     return &classic_keyboard;
 }
 
 void classic_keyboard_interrupt_handler()
 {
-    
+
 }

@@ -85,7 +85,7 @@ out:
 
 void keyboard_init()
 {
-    keyboard_insert(clasic_init());
+    keyboard_insert(classic_init());
 }
 
 

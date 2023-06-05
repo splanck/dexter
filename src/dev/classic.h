@@ -8,7 +8,7 @@
 #define PS2_COMMAND_ENABLE_FIRST_PORT 0xAE
 
 int classic_keyboard_init();
-struct keyboard* clasic_init();
+struct keyboard* classic_init();
 uint8_t classic_keyboard_scancode_to_char(uint8_t scancode);
 
 #endif
