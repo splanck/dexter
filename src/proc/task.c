@@ -6,7 +6,7 @@
 #include "mem/kheap.h"
 #include "mem/memory.h"
 #include "mem/paging.h"
-#include "lib/string.h"
+#include "libc/string.h"
 
 // The current task that is running
 struct task* current_task = 0;

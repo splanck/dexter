@@ -1,7 +1,7 @@
 #include "proc/commands.h"
 #include "proc/task.h"
 #include "sys/idt.h"
-#include "lib/console.h"
+#include "libc/stdio.h"
 
 void* isr80h_command0_sum(struct interrupt_frame* frame)
 {

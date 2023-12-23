@@ -6,7 +6,7 @@
 #include "sys/status.h"
 #include "sys/kernel.h"
 #include "sys/config.h"
-#include "lib/string.h"
+#include "libc/string.h"
 #include <stdint.h>
 
 #define DEXTER_FAT16_SIGNATURE 0x29

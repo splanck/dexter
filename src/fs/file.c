@@ -6,7 +6,7 @@
 #include "sys/kernel.h"
 #include "mem/memory.h"
 #include "mem/kheap.h"
-#include "lib/string.h"
+#include "libc/string.h"
 
 struct filesystem* filesystems[DEXTER_MAX_FILESYSTEMS];
 struct file_descriptor* file_descriptors[DEXTER_MAX_FILE_DESCRIPTORS];

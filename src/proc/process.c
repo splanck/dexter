@@ -6,7 +6,7 @@
 #include "mem/memory.h"
 #include "mem/kheap.h"
 #include "mem/paging.h"
-#include "lib/string.h"
+#include "libc/string.h"
 #include "fs/file.h"
 
 // The current process that is running

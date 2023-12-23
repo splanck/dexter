@@ -14,7 +14,7 @@
 #include "mem/memory.h"
 #include "fs/disk.h"
 #include "fs/file.h"
-#include "lib/console.h"
+#include "libc/stdio.h"
 #include "dev/keyboard.h"
 
 static struct paging_4gb_chunk* kernel_chunk = 0;

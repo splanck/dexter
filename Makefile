@@ -1,5 +1,5 @@
 C_COMPILER = i686-elf-gcc
-FILES = ./build/kernel.asm.o ./build/idt.asm.o ./build/io.asm.o ./build/task.asm.o ./build/tss.asm.o ./build/gdt.asm.o ./build/paging.asm.o ./build/kernel.o ./build/idt.o ./build/memory.o ./build/console.o ./build/string.o ./build/heap.o ./build/kheap.o ./build/paging.o ./build/disk.o ./build/pparser.o ./build/streamer.o ./build/file.o ./build/fat16.o ./build/utility.o ./build/gdt.o ./build/task.o ./build/process.o ./build/isr80h.o ./build/commands.o ./build/keyboard.o ./build/classic.o
+FILES = ./build/kernel.asm.o ./build/idt.asm.o ./build/io.asm.o ./build/task.asm.o ./build/tss.asm.o ./build/gdt.asm.o ./build/paging.asm.o ./build/kernel.o ./build/idt.o ./build/memory.o ./build/stdio.o ./build/string.o ./build/heap.o ./build/kheap.o ./build/paging.o ./build/disk.o ./build/pparser.o ./build/streamer.o ./build/file.o ./build/fat16.o ./build/gdt.o ./build/task.o ./build/process.o ./build/isr80h.o ./build/commands.o ./build/keyboard.o ./build/classic.o ./build/math.o
 INCLUDES = -I./src
 FLAGS = -g -ffreestanding -falign-jumps -falign-functions -falign-labels -falign-loops -fstrength-reduce -fomit-frame-pointer -finline-functions -Wno-unused-function -fno-builtin -Werror -Wno-unused-label -Wno-cpp -Wno-unused-parameter -nostdlib -nostartfiles -nodefaultlibs -Wall -O0 -Iinc
 
@@ -50,17 +50,11 @@ all: ./bin/boot.bin ./bin/kernel.bin user_programs
 ./build/gdt.o: ./src/sys/gdt.c
 	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/sys/gdt.c -o ./build/gdt.o
 
-./build/console.o: ./src/lib/console.c
-	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/lib/console.c -o ./build/console.o
-
 ./build/keyboard.o: ./src/dev/keyboard.c
 	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/dev/keyboard.c -o ./build/keyboard.o
 
 ./build/classic.o: ./src/dev/classic.c
 	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/dev/classic.c -o ./build/classic.o
-
-./build/utility.o: ./src/lib/utility.c
-	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/lib/utility.c -o ./build/utility.o
 
 ./build/fat16.o: ./src/fs/fat16.c
 	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/fs/fat16.c -o ./build/fat16.o
@@ -79,9 +73,6 @@ all: ./bin/boot.bin ./bin/kernel.bin user_programs
 
 ./build/idt.o: ./src/sys/idt.c
 	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/sys/idt.c -o ./build/idt.o
-
-./build/string.o: ./src/lib/string.c
-	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/lib/string.c -o ./build/string.o
 
 ./build/paging.o: ./src/mem/paging.c
 	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/mem/paging.c -o ./build/paging.o
@@ -107,6 +98,15 @@ all: ./bin/boot.bin ./bin/kernel.bin user_programs
 ./build/commands.o: ./src/proc/commands.c
 	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/proc/commands.c -o ./build/commands.o
 
+./build/math.o: ./src/libc/math.c
+	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/libc/math.c -o ./build/math.o
+
+./build/string.o: ./src/libc/string.c
+	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/libc/string.c -o ./build/string.o
+
+./build/stdio.o: ./src/libc/stdio.c
+	i686-elf-gcc $(INCLUDES) $(FLAGS) -std=gnu99 -c ./src/libc/stdio.c -o ./build/stdio.o
+
 user_programs:
 	cd ./progs/blank && $(MAKE) all
 
@@ -119,4 +119,4 @@ run:
 clean: user_programs_clean
 	rm -rf ./bin
 	rm -rf ${FILES}
-	rm -rf ./build
+	rm -rf ./buildt

@@ -4,7 +4,7 @@
 #include "sys/io.h"
 #include "mem/memory.h"
 #include "proc/task.h"
-#include "lib/console.h"
+#include "libc/stdio.h"
 
 struct idt_desc idt_descriptors[DEXTER_TOTAL_INTERUPTS];
 struct idtr_desc idtr_descriptor;

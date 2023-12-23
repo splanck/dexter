@@ -4,7 +4,7 @@
 #include "sys/config.h"
 #include "mem/kheap.h"
 #include "mem/memory.h"
-#include "lib/string.h"
+#include "libc/string.h"
 
 static int pathparser_path_valid_format(const char* filename)
 {
