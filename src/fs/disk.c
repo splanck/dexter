@@ -2,7 +2,7 @@
 #include "sys/io.h"
 #include "sys/config.h"
 #include "sys/status.h"
-#include "mem/memory.h"
+#include "libc/stdlib.h"
 
 struct disk disk;
 

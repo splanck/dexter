@@ -1,6 +1,6 @@
 #include "mem/heap.h"
 #include "mem/kheap.h"
-#include "mem/memory.h"
+#include "libc/stdlib.h"
 #include "libc/stdio.h"
 #include "sys/kernel.h"
 #include "sys/config.h"

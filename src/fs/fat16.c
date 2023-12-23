@@ -2,7 +2,7 @@
 #include "fs/disk.h"
 #include "fs/streamer.h"
 #include "mem/kheap.h"
-#include "mem/memory.h"
+#include "libc/stdlib.h"
 #include "sys/status.h"
 #include "sys/kernel.h"
 #include "sys/config.h"

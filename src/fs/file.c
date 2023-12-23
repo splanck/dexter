@@ -4,7 +4,7 @@
 #include "sys/config.h"
 #include "sys/status.h"
 #include "sys/kernel.h"
-#include "mem/memory.h"
+#include "libc/stdlib.h"
 #include "mem/kheap.h"
 #include "libc/string.h"
 

@@ -11,7 +11,7 @@
 #include "mem/heap.h"
 #include "mem/kheap.h"
 #include "mem/paging.h"
-#include "mem/memory.h"
+#include "libc/stdlib.h"
 #include "fs/disk.h"
 #include "fs/file.h"
 #include "libc/stdio.h"

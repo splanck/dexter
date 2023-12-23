@@ -1,5 +1,5 @@
 #include "mem/heap.h"
-#include "mem/memory.h"
+#include "libc/stdlib.h"
 #include "sys/status.h"
 #include "sys/config.h"
 

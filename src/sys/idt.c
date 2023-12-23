@@ -2,7 +2,7 @@
 #include "sys/config.h"
 #include "sys/kernel.h"
 #include "sys/io.h"
-#include "mem/memory.h"
+#include "libc/stdlib.h"
 #include "proc/task.h"
 #include "libc/stdio.h"
 

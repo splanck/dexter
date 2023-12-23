@@ -3,7 +3,7 @@
 #include "sys/status.h"
 #include "sys/config.h"
 #include "mem/kheap.h"
-#include "mem/memory.h"
+#include "libc/stdlib.h"
 #include "libc/string.h"
 
 static int pathparser_path_valid_format(const char* filename)
