@@ -128,6 +128,11 @@ void setup_tss()
     tss_load(0x28);
 }
 
+void pic_timer_callback(struct interrupt_frame* frame)
+{
+    print("Timer activated\n");
+}
+
 void panic(const char* msg)
 {
     print("\n");
@@ -179,22 +184,23 @@ void kernel_init()
     print("Kernel commands registered.\n");
 #endif
 
+    // Initialize interrupt descriptor table
+    idt_init();
+#ifdef VERBOSE
+    cprint("Interrupt descriptor table initialized.\n", 13);
+#endif
+
     // Initialize keyboard
     keyboard_init();
 #ifdef VERBOSE
     print("Keyboard initialized.\n");
 #endif
+//    idt_register_interrupt_callback(0x20, pic_timer_callback);
 
     // Setup the disk
     disk_search_and_init();
 #ifdef VERBOSE
     cprint("Primary disk initialized.\n", 14);
-#endif
-
-    // Initialize interrupt descriptor table
-    idt_init();
-#ifdef VERBOSE
-    cprint("Interrupt descriptor table initialized.\n", 13);
 #endif
 
     // Setup the task switching segment
@@ -204,7 +210,7 @@ void kernel_init()
 #endif
 
     // Enable interrupts
-//     enable_interrupts();
+     enable_interrupts();
 // #ifdef VERBOSE
 //     cprint("Interrupts enabled.\n\n", 12);
 // #endif

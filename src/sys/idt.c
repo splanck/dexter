@@ -1,6 +1,7 @@
 #include "sys/idt.h"
 #include "sys/config.h"
 #include "sys/kernel.h"
+#include "sys/status.h"
 #include "sys/io.h"
 #include "libc/stdlib.h"
 #include "proc/task.h"
@@ -11,6 +12,7 @@ struct idtr_desc idtr_descriptor;
 
 extern void* interrupt_pointer_table[DEXTER_TOTAL_INTERUPTS];
 static ISR80H_COMMAND isr80h_commands[DEXTER_MAX_ISR80H_COMMANDS];
+static INTERRUPT_CALLBACK_FUNCTION interrupt_callbacks[DEXTER_TOTAL_INTERUPTS];
 
 extern void idt_load(struct idtr_desc* ptr);
 extern void no_interrupt();
@@ -57,6 +59,16 @@ void no_interrupt_handler()
 
 void interrupt_handler(int interrupt, struct interrupt_frame* frame)
 {
+    kernel_page();
+
+    if(interrupt_callbacks[interrupt] != 0)
+    {
+        task_current_save_state(frame);
+        interrupt_callbacks[interrupt](frame);
+    }
+
+    task_page();
+    
     outb(0x20, 0x20);
 }
 
@@ -74,6 +86,20 @@ void idt_set(int interrupt_no, void* address)
     desc->zero = 0x00;
     desc->type_attr = 0xEE;
     desc->offset_2 = (uint32_t) address >> 16;
+}
+
+int idt_register_interrupt_callback(int interrupt, INTERRUPT_CALLBACK_FUNCTION callback)
+{
+    int r = DEXTER_ALL_OK;
+
+    if(interrupt < 0 || interrupt > DEXTER_TOTAL_INTERUPTS)
+    {
+        return -EINVARG;
+    }
+
+    interrupt_callbacks[interrupt] = callback;
+
+    return r;
 }
 
 void isr80h_register_command(int command_id, ISR80H_COMMAND command)
