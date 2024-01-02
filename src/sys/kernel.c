@@ -210,7 +210,7 @@ void kernel_init()
 #endif
 
     // Enable interrupts
-     enable_interrupts();
+    // enable_interrupts();
 // #ifdef VERBOSE
 //     cprint("Interrupts enabled.\n\n", 12);
 // #endif

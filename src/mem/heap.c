@@ -25,7 +25,7 @@ static bool heap_validate_alignment(void* ptr)
     return (unsigned int)ptr % DEXTER_HEAP_BLOCK_SIZE == 0;
 }
 
-static uint32_t heap_align_value_to_upper(uint32_t val) 
+uint32_t heap_align_value_to_upper(uint32_t val) 
 {
     if ((val % DEXTER_HEAP_BLOCK_SIZE) == 0)
     {

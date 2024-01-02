@@ -6,8 +6,6 @@
 #include <stdbool.h>
 #include <stdarg.h>
 
-int atoi(const char *str);
-bool isdigit(char c);
 int istrncmp(const char *s1, const char *s2, size_t n);
 void strcat(char *dest, char *src);
 char* strcpy(char *destination, char *source);

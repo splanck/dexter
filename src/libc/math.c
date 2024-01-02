@@ -1,6 +1,6 @@
 #include "libc/math.h"
 
-static unsigned int saved_seed = 0;
+
 
 int abs(int n) 
 {
@@ -29,25 +29,6 @@ double pow(double base, int exp)
     }
 
     return exp < 0 ? 1 / result : result;
-}
-
-int rand(void) 
-{
-    static unsigned int seed = 1;
-    unsigned int s = 0;
-
-    if(saved_seed == 0)
-    {
-        s = seed;
-    }
-    else
-    {
-        s = saved_seed;
-    }
-
-    s = s * 1103515245 + 12345;
-
-    return (unsigned int)(s / 65536) % 32768;
 }
 
 double round(double x)
@@ -87,7 +68,4 @@ double sqrt(double num)
     return guess;
 }
 
-void srand(unsigned int seed) 
-{
-    saved_seed = seed;
-}
+

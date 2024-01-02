@@ -1,30 +1,5 @@
 #include "libc/string.h"
 
-int atoi(const char *str) 
-{
-    int r = 0;
-    int sign = 1;
-    int i = 0;
-
-    if (str[0] == '-') 
-    {
-        sign = -1;
-        i++;
-    }
-
-    for (; str[i] != '\0'; ++i) 
-    {
-        r = r * 10 + str[i] - '0';
-    }
-
-    return sign * r;
-}
-
-bool isdigit(char c) 
-{
-    return c >= 48 && c <= 57;
-}
-
 int istrncmp(const char *s1, const char *s2, size_t n) 
 {
     int f, l;
