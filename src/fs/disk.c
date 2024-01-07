@@ -16,6 +16,7 @@ int disk_read_sector(int lba, int total, void* buf)
     outb(0x1F7, 0x20);
 
     unsigned short* ptr = (unsigned short*) buf;
+
     for (int b = 0; b < total; b++)
     {
         // Wait for the buffer to be ready
@@ -32,7 +33,6 @@ int disk_read_sector(int lba, int total, void* buf)
             *ptr = insw(0x1F0);
             ptr++;
         }
-
     }
 
     return 0;
