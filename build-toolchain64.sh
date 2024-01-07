@@ -1,12 +1,12 @@
-#/bin/bash
-export PREFIX="$HOME/opt/cross"
-export TARGET=i686-elf
+#!/bin/bash
+export PREFIX="$HOME/opt/cross64"
+export TARGET=x86_64-elf  # Changed from i686-elf to x86_64-elf
 export PATH="$PREFIX/bin:$PATH"
-export BINVER="2.36"
-export GCCVER="10.4.0"
+export BINVER="2.41"
+export GCCVER="12.2.0"
 
-mkdir -p $HOME/source/x86
-cd $HOME/source/x86
+mkdir -p $HOME/source/x64
+cd $HOME/source/x64
 
 wget https://ftp.gnu.org/gnu/binutils/binutils-$BINVER.tar.gz
 wget https://ftp.gnu.org/gnu/gcc/gcc-$GCCVER/gcc-$GCCVER.tar.gz
