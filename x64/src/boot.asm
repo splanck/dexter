@@ -17,7 +17,24 @@ TestDiskExtension:
     cmp bx,0xaa55
     jne NotSupport
 
-PrintMessage:
+LoadLoader:
+    mov si,ReadPacket
+    mov word[si],0x10
+    mov word[si+2],5
+    mov word[si+4],0x7e00
+    mov word[si+6],0
+    mov dword[si+8],1
+    mov dword[si+0xc],0
+    mov dl,[DriveId]
+    mov ah,0x42
+    int 0x13
+    jc  ReadError
+
+    mov dl,[DriveId]
+    jmp 0x7e00 
+
+ReadError:
+NotSupport:
     mov ah,0x13
     mov al,1
     mov bx,0xa
@@ -26,14 +43,14 @@ PrintMessage:
     mov cx,MessageLen 
     int 0x10
 
-NotSupport:
 End:
     hlt    
     jmp End
     
 DriveId:    db 0
-Message:    db "BIOS disk extension detected."
+Message:    db "We have an error in boot process"
 MessageLen: equ $-Message
+ReadPacket: times 16 db 0
 
 times (0x1be-($-$$)) db 0
 

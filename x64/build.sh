@@ -1,5 +1,11 @@
+rm -rf ./build/os.bin
+
 nasm -f bin -o ./build/boot.bin ./src/boot.asm
+nasm -f bin -o ./build/loader.bin ./src/loader.asm
 
-dd if=./build/boot.bin of=./images/dexter64.img bs=512 count=1 conv=notrunc
+dd if=./build/boot.bin >> ./build/os.bin
+dd if=./build/loader.bin >> ./build/os.bin
+dd if=/dev/zero bs=1048576 count=5 >> ./build/os.bin
 
-qemu-system-x86_64 -hda ./images/dexter64.img
+qemu-system-x86_64 -hda ./build/os.bin
+
