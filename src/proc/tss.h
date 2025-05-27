@@ -10,7 +10,7 @@ struct tss
     uint32_t esp1;
     uint32_t esp2;
     uint32_t ss2;
-    uint32_t sr3;
+    uint32_t cr3;  /* Page directory base register */
     uint32_t eip;
     uint32_t eflags;
     uint32_t eax;
