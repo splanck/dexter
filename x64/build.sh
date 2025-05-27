@@ -1,3 +1,4 @@
+#!/bin/bash
 rm -rf ./build/os.bin
 
 nasm -f bin -o ./build/boot.bin ./src/boot.asm
